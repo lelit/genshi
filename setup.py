@@ -56,11 +56,11 @@ class optional_build_ext(build_ext):
             self._unavailable(e)
 
     def _unavailable(self, exc):
-        print('*' * 70)
+        print(('*' * 70))
         print("""WARNING:
 An optional C extension could not be compiled, speedups will not be
 available.""")
-        print('*' * 70)
+        print(('*' * 70))
         print(exc)
 
 
@@ -91,16 +91,6 @@ cmdclass = {'build_doc': build_doc, 'test_doc': test_doc,
             'build_ext': optional_build_ext}
 if bdist_egg:
     cmdclass['bdist_egg'] = my_bdist_egg
-
-
-# Use 2to3 if we're running under Python 3 (with Distribute)
-extra = {}
-if sys.version_info >= (3,):
-    extra['use_2to3'] = True
-    extra['convert_2to3_doctests'] = []
-    extra['use_2to3_fixers'] = ['fixes']
-    # Install genshi template tests
-    extra['include_package_data'] = True
 
 
 # include tests for python3 setup.py test (needed when creating
@@ -163,5 +153,5 @@ feature is a template language, which is heavily inspired by Kid.""",
     features = {'speedups': speedups},
     cmdclass = cmdclass,
 
-    **extra
+    include_package_data = True,
 )

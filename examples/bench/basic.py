@@ -5,7 +5,7 @@
 
 from cgi import escape
 import os
-from StringIO import StringIO
+from io import StringIO
 import sys
 import timeit
 
@@ -22,7 +22,7 @@ def genshi(dirname, verbose=False):
         return template.generate(**data).render('xhtml')
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def genshi_text(dirname, verbose=False):
@@ -36,14 +36,14 @@ def genshi_text(dirname, verbose=False):
         return template.generate(**data).render('text')
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def mako(dirname, verbose=False):
     try:
         from mako.lookup import TemplateLookup
     except ImportError:
-        print>>sys.stderr, 'Mako not installed, skipping'
+        print('Mako not installed, skipping', file=sys.stderr)
         return lambda: None
     lookup = TemplateLookup(directories=[dirname], filesystem_checks=False)
     template = lookup.get_template('template.html')
@@ -52,7 +52,7 @@ def mako(dirname, verbose=False):
                     list_items=['Number %d' % num for num in range(1, 15)])
         return template.render(**data)
     if verbose:
-        print render()
+        print(render())
     return render
 
 def cheetah(dirname, verbose=False):
@@ -60,7 +60,7 @@ def cheetah(dirname, verbose=False):
     try:
         from Cheetah.Template import Template
     except ImportError:
-        print>>sys.stderr, 'Cheetah not installed, skipping'
+        print('Cheetah not installed, skipping', file=sys.stderr)
         return lambda: None
     class MyTemplate(Template):
         def serverSidePath(self, path): return os.path.join(dirname, path)
@@ -70,18 +70,18 @@ def cheetah(dirname, verbose=False):
     def render():
         template = MyTemplate(file=filename,
                               searchList=[{'title': 'Just a test', 'user': 'joe',
-                                           'items': [u'Number %d' % num for num in range(1, 15)]}])
+                                           'items': ['Number %d' % num for num in range(1, 15)]}])
         return template.respond()
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def clearsilver(dirname, verbose=False):
     try:
         import neo_cgi
     except ImportError:
-        print>>sys.stderr, 'ClearSilver not installed, skipping'
+        print('ClearSilver not installed, skipping', file=sys.stderr)
         return lambda: None
     neo_cgi.update()
     import neo_util
@@ -98,7 +98,7 @@ def clearsilver(dirname, verbose=False):
         return cs.render()
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def django(dirname, verbose=False):
@@ -106,7 +106,7 @@ def django(dirname, verbose=False):
         from django.conf import settings
         settings.configure(TEMPLATE_DIRS=[os.path.join(dirname, 'templates')])
     except ImportError:
-        print>>sys.stderr, 'Django not installed, skipping'
+        print('Django not installed, skipping', file=sys.stderr)
         return lambda: None
     from django import template, templatetags
     from django.template import loader
@@ -119,14 +119,14 @@ def django(dirname, verbose=False):
         return tmpl.render(template.Context(data))
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def kid(dirname, verbose=False):
     try:
         import kid
     except ImportError:
-        print>>sys.stderr, "Kid not installed, skipping"
+        print("Kid not installed, skipping", file=sys.stderr)
         return lambda: None
     kid.path = kid.TemplatePath([dirname])
     template = kid.load_template('template.kid').Template
@@ -137,14 +137,14 @@ def kid(dirname, verbose=False):
         ).serialize(output='xhtml')
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def simpletal(dirname, verbose=False):
     try:
         from simpletal import simpleTAL, simpleTALES
     except ImportError:
-        print>>sys.stderr, "SimpleTAL not installed, skipping"
+        print("SimpleTAL not installed, skipping", file=sys.stderr)
         return lambda: None
     fileobj = open(os.path.join(dirname, 'base.html'))
     base = simpleTAL.compileHTMLTemplate(fileobj)
@@ -163,7 +163,7 @@ def simpletal(dirname, verbose=False):
         return buf.getvalue()
 
     if verbose:
-        print render()
+        print(render())
     return render
 
 def run(engines, number=2000, verbose=False):
@@ -171,19 +171,19 @@ def run(engines, number=2000, verbose=False):
     for engine in engines:
         dirname = os.path.join(basepath, engine)
         if verbose:
-            print '%s:' % engine.capitalize()
-            print '--------------------------------------------------------'
+            print('%s:' % engine.capitalize())
+            print('--------------------------------------------------------')
         else:
-            print '%s:' % engine.capitalize(),
+            print('%s:' % engine.capitalize(), end=' ')
         t = timeit.Timer(setup='from __main__ import %s; render = %s(r"%s", %s)'
                                % (engine, engine, dirname, verbose),
                          stmt='render()')
         time = t.timeit(number=number) / number
         if verbose:
-            print '--------------------------------------------------------'
-        print '%.2f ms' % (1000 * time)
+            print('--------------------------------------------------------')
+        print('%.2f ms' % (1000 * time))
         if verbose:
-            print '--------------------------------------------------------'
+            print('--------------------------------------------------------')
 
 
 if __name__ == '__main__':

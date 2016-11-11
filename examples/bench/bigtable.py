@@ -8,7 +8,7 @@
 import cgi
 import sys
 import timeit
-from StringIO import StringIO
+from io import StringIO
 from genshi.builder import tag
 from genshi.template import MarkupTemplate, NewTextTemplate
 
@@ -111,7 +111,7 @@ def test_genshi_text():
 def test_genshi_builder():
     """Genshi template + tag builder"""
     stream = tag.TABLE([
-        tag.tr([tag.td(c) for c in row.values()])
+        tag.tr([tag.td(c) for c in list(row.values())])
         for row in table
     ]).generate()
     stream = genshi_tmpl2.generate(table=stream)
@@ -121,7 +121,7 @@ def test_builder():
     """Genshi tag builder"""
     stream = tag.TABLE([
         tag.tr([
-            tag.td(c) for c in row.values()
+            tag.td(c) for c in list(row.values())
         ])
         for row in table
     ]).generate()
@@ -151,7 +151,7 @@ if kid:
             _table = cet.Element('table')
             for row in table:
                 td = cet.SubElement(_table, 'tr')
-                for c in row.values():
+                for c in list(row.values()):
                     cet.SubElement(td, 'td').text=str(c)
             kid_tmpl2.table = _table
             kid_tmpl2.serialize(output='html')
@@ -162,7 +162,7 @@ if et:
         _table = et.Element('table')
         for row in table:
             tr = et.SubElement(_table, 'tr')
-            for c in row.values():
+            for c in list(row.values()):
                 et.SubElement(tr, 'td').text=str(c)
         et.tostring(_table)
 
@@ -172,7 +172,7 @@ if cet:
         _table = cet.Element('table')
         for row in table:
             tr = cet.SubElement(_table, 'tr')
-            for c in row.values():
+            for c in list(row.values()):
                 cet.SubElement(tr, 'td').text=str(c)
         cet.tostring(_table)
 
@@ -201,7 +201,7 @@ def run(which=None, number=10):
              'test_et', 'test_cet', 'test_clearsilver', 'test_django']
 
     if which:
-        tests = filter(lambda n: n[5:] in which, tests)
+        tests = [n for n in tests if n[5:] in which]
 
     for test in [t for t in tests if hasattr(sys.modules[__name__], t)]:
         t = timeit.Timer(setup='from __main__ import %s;' % test,
@@ -212,7 +212,7 @@ def run(which=None, number=10):
             result = '   (not installed?)'
         else:
             result = '%16.2f ms' % (1000 * time)
-        print '%-35s %s' % (getattr(sys.modules[__name__], test).__doc__, result)
+        print(('%-35s %s' % (getattr(sys.modules[__name__], test).__doc__, result)))
 
 
 if __name__ == '__main__':

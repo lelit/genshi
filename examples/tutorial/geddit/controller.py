@@ -20,7 +20,7 @@ class Root(object):
     @cherrypy.expose
     @template.output('index.html')
     def index(self):
-        links = sorted(self.data.values(), key=operator.attrgetter('time'))
+        links = sorted(list(self.data.values()), key=operator.attrgetter('time'))
         return template.render(links=links)
 
     @cherrypy.expose
@@ -35,7 +35,7 @@ class Root(object):
                 link = Link(**data)
                 self.data[link.id] = link
                 raise cherrypy.HTTPRedirect('/')
-            except Invalid, e:
+            except Invalid as e:
                 errors = e.unpack_errors()
         else:
             errors = {}
@@ -69,7 +69,7 @@ class Root(object):
                     raise cherrypy.HTTPRedirect('/info/%s' % link.id)
                 return template.render('_comment.html', comment=comment,
                                        num=len(link.comments))
-            except Invalid, e:
+            except Invalid as e:
                 errors = e.unpack_errors()
         else:
             errors = {}
@@ -89,7 +89,7 @@ class Root(object):
                 raise cherrypy.NotFound()
             return template.render('info.xml', link=link)
         else:
-            links = sorted(self.data.values(), key=operator.attrgetter('time'))
+            links = sorted(list(self.data.values()), key=operator.attrgetter('time'))
             return template.render(links=links)
 
 

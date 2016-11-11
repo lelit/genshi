@@ -17,11 +17,11 @@ def test():
 
     start = time.clock()
     template = kid.Template(file='test.kid', **ctxt)
-    print ' --> parse stage: %.4f ms' % ((time.clock() - start) * 1000)
+    print((' --> parse stage: %.4f ms' % ((time.clock() - start) * 1000)))
 
     for output in template.generate():
         sys.stdout.write(output)
-    print
+    print()
 
     times = []
     for i in range(1000):
@@ -30,10 +30,10 @@ def test():
         times.append(time.clock() - start)
         sys.stdout.write('.')
         sys.stdout.flush()
-    print
+    print()
 
-    print ' --> render stage: %s ms (average)' % (
-          (sum(times) / len(times) * 1000))
+    print((' --> render stage: %s ms (average)' % (
+          (sum(times) / len(times) * 1000))))
 
 if __name__ == '__main__':
     if '-p' in sys.argv:
