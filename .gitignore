@@ -1,4 +1,6 @@
 *.bak
 *.egg-info
+*.so
 /.tox/
+/build/
 __pycache__
