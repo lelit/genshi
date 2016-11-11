@@ -474,21 +474,21 @@ class HTMLSanitizer(object):
         that is not considered safe are removed:
 
         >>> sanitizer = HTMLSanitizer()
-        >>> sanitizer.sanitize_css(u'''
+        >>> sanitizer.sanitize_css('''
         ...   background: url(javascript:alert("foo"));
         ...   color: #000;
         ... ''')
-        [u'color: #000']
+        ['color: #000']
 
         Also, the proprietary Internet Explorer function ``expression()`` is
         always stripped:
 
-        >>> sanitizer.sanitize_css(u'''
+        >>> sanitizer.sanitize_css('''
         ...   background: #fff;
         ...   color: #000;
         ...   width: e/**/xpression(alert("foo"));
         ... ''')
-        [u'background: #fff', u'color: #000']
+        ['background: #fff', 'color: #000']
 
         :param text: the CSS text; this is expected to be `unicode` and to not
                      contain any character or numeric references

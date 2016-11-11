@@ -494,14 +494,14 @@ class Markup(str):
         it may contain (<, >, & and \").
 
         >>> escape('"1 < 2"')
-        <Markup u'&#34;1 &lt; 2&#34;'>
+        <Markup '&#34;1 &lt; 2&#34;'>
 
         If the `quotes` parameter is set to `False`, the \" character is left
         as is. Escaping quotes is generally only required for strings that are
         to be used in attribute values.
 
         >>> escape('"1 < 2"', quotes=False)
-        <Markup u'"1 &lt; 2"'>
+        <Markup '"1 &lt; 2"'>
 
         :param text: the text to escape
         :param quotes: if ``True``, double quote characters are escaped in
@@ -527,7 +527,7 @@ class Markup(str):
         """Reverse-escapes &, <, >, and \" and returns a `unicode` object.
 
         >>> Markup('1 &lt; 2').unescape()
-        u'1 < 2'
+        '1 < 2'
 
         :return: the unescaped string
         :rtype: `unicode`
@@ -577,7 +577,7 @@ def unescape(text):
     """Reverse-escapes &, <, >, and \" and returns a `unicode` object.
 
     >>> unescape(Markup('1 &lt; 2'))
-    u'1 < 2'
+    '1 < 2'
 
     If the provided `text` object is not a `Markup` instance, it is returned
     unchanged.
@@ -607,7 +607,7 @@ class Namespace(object):
     >>> html
     Namespace('http://www.w3.org/1999/xhtml')
     >>> html.uri
-    u'http://www.w3.org/1999/xhtml'
+    'http://www.w3.org/1999/xhtml'
 
     The `Namespace` object can than be used to generate `QName` objects with
     that namespace:
@@ -615,9 +615,9 @@ class Namespace(object):
     >>> html.body
     QName('http://www.w3.org/1999/xhtml}body')
     >>> html.body.localname
-    u'body'
+    'body'
     >>> html.body.namespace
-    u'http://www.w3.org/1999/xhtml'
+    'http://www.w3.org/1999/xhtml'
 
     The same works using item access notation, which is useful for element or
     attribute names that are not valid Python identifiers:
@@ -700,16 +700,16 @@ class QName(str):
     >>> qname
     QName('foo')
     >>> qname.localname
-    u'foo'
+    'foo'
     >>> qname.namespace
 
     >>> qname = QName('http://www.w3.org/1999/xhtml}body')
     >>> qname
     QName('http://www.w3.org/1999/xhtml}body')
     >>> qname.localname
-    u'body'
+    'body'
     >>> qname.namespace
-    u'http://www.w3.org/1999/xhtml'
+    'http://www.w3.org/1999/xhtml'
     """
     __slots__ = ['namespace', 'localname']
 

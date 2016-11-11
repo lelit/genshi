@@ -33,7 +33,7 @@ the ``<head>`` of the input document:
 ...  </body>
 ... </html>''',
 ... encoding='utf-8')
->>> print(html | Transformer('body/em').map(unicode.upper, TEXT)
+>>> print(html | Transformer('body/em').map(str.upper, TEXT)
 ...                                    .unwrap().wrap(tag.u))
 <html>
   <head><title>Some Title</title></head>
@@ -239,11 +239,11 @@ class Transformer(object):
         >>> html = HTML('<body>Some <em>test</em> text</body>', encoding='utf-8')
         >>> print(html | Transformer().select('.//em').trace())
         (None, ('START', (QName('body'), Attrs()), (None, 1, 0)))
-        (None, ('TEXT', u'Some ', (None, 1, 6)))
+        (None, ('TEXT', 'Some ', (None, 1, 6)))
         ('ENTER', ('START', (QName('em'), Attrs()), (None, 1, 11)))
-        ('INSIDE', ('TEXT', u'test', (None, 1, 15)))
+        ('INSIDE', ('TEXT', 'test', (None, 1, 15)))
         ('EXIT', ('END', QName('em'), (None, 1, 19)))
-        (None, ('TEXT', u' text', (None, 1, 24)))
+        (None, ('TEXT', ' text', (None, 1, 24)))
         (None, ('END', QName('body'), (None, 1, 29)))
         <body>Some <em>test</em> text</body>
 
@@ -263,11 +263,11 @@ class Transformer(object):
         >>> html = HTML('<body>Some <em>test</em> text</body>', encoding='utf-8')
         >>> print(html | Transformer('//em').invert().trace())
         ('OUTSIDE', ('START', (QName('body'), Attrs()), (None, 1, 0)))
-        ('OUTSIDE', ('TEXT', u'Some ', (None, 1, 6)))
+        ('OUTSIDE', ('TEXT', 'Some ', (None, 1, 6)))
         (None, ('START', (QName('em'), Attrs()), (None, 1, 11)))
-        (None, ('TEXT', u'test', (None, 1, 15)))
+        (None, ('TEXT', 'test', (None, 1, 15)))
         (None, ('END', QName('em'), (None, 1, 19)))
-        ('OUTSIDE', ('TEXT', u' text', (None, 1, 24)))
+        ('OUTSIDE', ('TEXT', ' text', (None, 1, 24)))
         ('OUTSIDE', ('END', QName('body'), (None, 1, 29)))
         <body>Some <em>test</em> text</body>
 
@@ -283,11 +283,11 @@ class Transformer(object):
         >>> html = HTML('<body>Some <em>test</em> text</body>', encoding='utf-8')
         >>> print(html | Transformer('//em').end().trace())
         ('OUTSIDE', ('START', (QName('body'), Attrs()), (None, 1, 0)))
-        ('OUTSIDE', ('TEXT', u'Some ', (None, 1, 6)))
+        ('OUTSIDE', ('TEXT', 'Some ', (None, 1, 6)))
         ('OUTSIDE', ('START', (QName('em'), Attrs()), (None, 1, 11)))
-        ('OUTSIDE', ('TEXT', u'test', (None, 1, 15)))
+        ('OUTSIDE', ('TEXT', 'test', (None, 1, 15)))
         ('OUTSIDE', ('END', QName('em'), (None, 1, 19)))
-        ('OUTSIDE', ('TEXT', u' text', (None, 1, 24)))
+        ('OUTSIDE', ('TEXT', ' text', (None, 1, 24)))
         ('OUTSIDE', ('END', QName('body'), (None, 1, 29)))
         <body>Some <em>test</em> text</body>
 
@@ -482,7 +482,7 @@ class Transformer(object):
         ...     print(attrs)
         ...     return attrs.get(name)
         >>> print(html | Transformer('body/em').attr('class', print_attr))
-        Attrs([(QName('class'), u'before')])
+        Attrs([(QName('class'), 'before')])
         Attrs()
         <html><head><title>Some Title</title></head><body>Some <em
         class="before">body</em> <em>text</em>.</body></html>
@@ -628,7 +628,7 @@ class Transformer(object):
         >>> html = HTML('<html><head><title>Some Title</title></head>'
         ...               '<body>Some <em>body</em> text.</body></html>',
         ...             encoding='utf-8')
-        >>> print(html | Transformer('head/title').map(unicode.upper, TEXT))
+        >>> print(html | Transformer('head/title').map(str.upper, TEXT))
         <html><head><title>SOME TITLE</title></head><body>Some <em>body</em>
         text.</body></html>
 
@@ -681,11 +681,11 @@ class Transformer(object):
         >>> html = HTML('<body>Some <em>test</em> text</body>', encoding='utf-8')
         >>> print(html | Transformer('em').trace())
         (None, ('START', (QName('body'), Attrs()), (None, 1, 0)))
-        (None, ('TEXT', u'Some ', (None, 1, 6)))
+        (None, ('TEXT', 'Some ', (None, 1, 6)))
         ('ENTER', ('START', (QName('em'), Attrs()), (None, 1, 11)))
-        ('INSIDE', ('TEXT', u'test', (None, 1, 15)))
+        ('INSIDE', ('TEXT', 'test', (None, 1, 15)))
         ('EXIT', ('END', QName('em'), (None, 1, 19)))
-        (None, ('TEXT', u' text', (None, 1, 24)))
+        (None, ('TEXT', ' text', (None, 1, 24)))
         (None, ('END', QName('body'), (None, 1, 29)))
         <body>Some <em>test</em> text</body>
 
