@@ -1200,7 +1200,7 @@ class WithDirectiveTestCase(unittest.TestCase):
             一二三四五六日
           </span>
         </div>""", tmpl.generate().render(encoding=None))
-        
+
     def test_with_empty_value(self):
         """
         Verify that an empty py:with works (useless, but legal)

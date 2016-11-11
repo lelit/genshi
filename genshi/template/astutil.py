@@ -770,7 +770,7 @@ class ASTCodeGenerator(object):
 
 class ASTTransformer(object):
     """General purpose base class for AST transformations.
-    
+
     Every visitor method can be overridden to return an AST node that has been
     altered or replaced in some way.
     """
@@ -804,7 +804,7 @@ class ASTTransformer(object):
                     value = [self.visit(x) for x in value]
                 elif isinstance(value, tuple):
                     value = tuple(self.visit(x) for x in value)
-                else: 
+                else:
                     value = self.visit(value)
                 setattr(clone, name, value)
         return clone

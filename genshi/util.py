@@ -24,29 +24,29 @@ __docformat__ = 'restructuredtext en'
 class LRUCache(dict):
     """A dictionary-like object that stores only a certain number of items, and
     discards its least recently used item when full.
-    
+
     >>> cache = LRUCache(3)
     >>> cache['A'] = 0
     >>> cache['B'] = 1
     >>> cache['C'] = 2
     >>> len(cache)
     3
-    
+
     >>> cache['A']
     0
-    
+
     Adding new items to the cache does not increase its size. Instead, the least
     recently used item is dropped:
-    
+
     >>> cache['D'] = 3
     >>> len(cache)
     3
     >>> 'B' in cache
     False
-    
+
     Iterating over the cache returns the keys, starting with the most recently
     used:
-    
+
     >>> for key in cache:
     ...     print(key)
     D
@@ -142,9 +142,9 @@ class LRUCache(dict):
 
 def flatten(items):
     """Flattens a potentially nested sequence into a flat list.
-    
+
     :param items: the sequence to flatten
-    
+
     >>> flatten((1, 2))
     [1, 2]
     >>> flatten([1, (2, 3), 4])
@@ -163,18 +163,18 @@ def flatten(items):
 
 def plaintext(text, keeplinebreaks=True):
     """Return the text with all entities and tags removed.
-    
+
     >>> plaintext('<b>1 &lt; 2</b>')
     u'1 < 2'
-    
+
     The `keeplinebreaks` parameter can be set to ``False`` to replace any line
     breaks by simple spaces:
-    
+
     >>> plaintext('''<b>1
     ... &lt;
     ... 2</b>''', keeplinebreaks=False)
     u'1 < 2'
-    
+
     :param text: the text to convert to plain text
     :param keeplinebreaks: whether line breaks in the text should be kept intact
     :return: the text with tags and entities removed
@@ -189,7 +189,7 @@ _STRIPENTITIES_RE = re.compile(r'&(?:#((?:\d+)|(?:[xX][0-9a-fA-F]+));?|(\w+);)')
 def stripentities(text, keepxmlentities=False):
     """Return a copy of the given text with any character or numeric entities
     replaced by the equivalent UTF-8 characters.
-    
+
     >>> stripentities('1 &lt; 2')
     u'1 < 2'
     >>> stripentities('more &hellip;')
@@ -198,10 +198,10 @@ def stripentities(text, keepxmlentities=False):
     u'\\u2026'
     >>> stripentities('&#x2026;')
     u'\\u2026'
-    
+
     If the `keepxmlentities` parameter is provided and is a truth value, the
     core XML entities (&amp;, &apos;, &gt;, &lt; and &quot;) are left intact.
-    
+
     >>> stripentities('1 &lt; 2 &hellip;', keepxmlentities=True)
     u'1 &lt; 2 \\u2026'
     """
@@ -230,21 +230,20 @@ def stripentities(text, keepxmlentities=False):
 _STRIPTAGS_RE = re.compile(r'(<!--.*?-->|<[^>]*>)')
 def striptags(text):
     """Return a copy of the text with any XML/HTML tags removed.
-    
+
     >>> striptags('<span>Foo</span> bar')
     'Foo bar'
     >>> striptags('<span class="bar">Foo</span>')
     'Foo'
     >>> striptags('Foo<br />')
     'Foo'
-    
+
     HTML/XML comments are stripped, too:
-    
+
     >>> striptags('<!-- <blub>hehe</blah> -->test')
     'test'
-    
+
     :param text: the string to remove tags from
     :return: the text with tags removed
     """
     return _STRIPTAGS_RE.sub('', text)
-

@@ -1295,7 +1295,7 @@ class CutTransformation(object):
             self.buffer.reset()
         for mark, event in stream:
             if mark:
-                # Send a BREAK event if there was no other event sent between 
+                # Send a BREAK event if there was no other event sent between
                 if not self.accumulate:
                     if not broken and self.buffer:
                         yield BREAK, (BREAK, None, None)

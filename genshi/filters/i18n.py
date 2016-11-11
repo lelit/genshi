@@ -67,7 +67,7 @@ class ExtractableI18NDirective(I18NDirective):
 class CommentDirective(I18NDirective):
     """Implementation of the ``i18n:comment`` template directive which adds
     translation comments.
-    
+
     >>> tmpl = MarkupTemplate('''<html xmlns:i18n="http://genshi.edgewall.org/i18n">
     ...   <p i18n:comment="As in Foo Bar">Foo</p>
     ... </html>''')
@@ -87,7 +87,7 @@ class CommentDirective(I18NDirective):
 class MsgDirective(ExtractableI18NDirective):
     r"""Implementation of the ``i18n:msg`` directive which marks inner content
     as translatable. Consider the following examples:
-    
+
     >>> tmpl = MarkupTemplate('''<html xmlns:i18n="http://genshi.edgewall.org/i18n">
     ...   <div i18n:msg="">
     ...     <p>Foo</p>
@@ -95,7 +95,7 @@ class MsgDirective(ExtractableI18NDirective):
     ...   </div>
     ...   <p i18n:msg="">Foo <em>bar</em>!</p>
     ... </html>''')
-    
+
     >>> translator = Translator()
     >>> translator.setup(tmpl)
     >>> list(translator.extract(tmpl.stream))
@@ -282,13 +282,13 @@ class PluralDirective(ChooseBranchDirective):
 class ChooseDirective(ExtractableI18NDirective):
     """Implementation of the ``i18n:choose`` directive which provides plural
     internationalisation of strings.
-    
+
     This directive requires at least one parameter, the one which evaluates to
     an integer which will allow to choose the plural/singular form. If you also
     have expressions inside the singular and plural version of the string you
     also need to pass a name for those parameters. Consider the following
     examples:
-    
+
     >>> tmpl = MarkupTemplate('''<html xmlns:i18n="http://genshi.edgewall.org/i18n">
     ...   <div i18n:choose="num; num">
     ...     <p i18n:singular="">There is $num coin</p>
@@ -488,7 +488,7 @@ class ChooseDirective(ExtractableI18NDirective):
 class DomainDirective(I18NDirective):
     """Implementation of the ``i18n:domain`` directive which allows choosing
     another i18n domain(catalog) to translate from.
-    
+
     >>> from genshi.filters.tests.i18n import DummyTranslations
     >>> tmpl = MarkupTemplate('''<html xmlns:i18n="http://genshi.edgewall.org/i18n">
     ...   <p i18n:msg="">Bar</p>
@@ -543,9 +543,9 @@ class DomainDirective(I18NDirective):
 class Translator(DirectiveFactory):
     """Can extract and translate localizable strings from markup streams and
     templates.
-    
+
     For example, assume the following template:
-    
+
     >>> tmpl = MarkupTemplate('''<html xmlns:py="http://genshi.edgewall.org/">
     ...   <head>
     ...     <title>Example</title>
@@ -555,25 +555,25 @@ class Translator(DirectiveFactory):
     ...     <p>${_("Hello, %(name)s") % dict(name=username)}</p>
     ...   </body>
     ... </html>''', filename='example.html')
-    
+
     For demonstration, we define a dummy ``gettext``-style function with a
     hard-coded translation table, and pass that to the `Translator` initializer:
-    
+
     >>> def pseudo_gettext(string):
     ...     return {
     ...         'Example': 'Beispiel',
     ...         'Hello, %(name)s': 'Hallo, %(name)s'
     ...     }[string]
     >>> translator = Translator(pseudo_gettext)
-    
+
     Next, the translator needs to be prepended to any already defined filters
     on the template:
-    
+
     >>> tmpl.filters.insert(0, translator)
-    
+
     When generating the template output, our hard-coded translations should be
     applied as expected:
-    
+
     >>> print(tmpl.generate(username='Hans', _=pseudo_gettext))
     <html>
       <head>
@@ -584,7 +584,7 @@ class Translator(DirectiveFactory):
         <p>Hallo, Hans</p>
       </body>
     </html>
-    
+
     Note that elements defining ``xml:lang`` attributes that do not contain
     variable expressions are ignored by this filter. That can be used to
     exclude specific parts of a template from being extracted and translated.
@@ -612,7 +612,7 @@ class Translator(DirectiveFactory):
     def __init__(self, translate=NullTranslations(), ignore_tags=IGNORE_TAGS,
                  include_attrs=INCLUDE_ATTRS, extract_text=True):
         """Initialize the translator.
-        
+
         :param translate: the translation function, for example ``gettext`` or
                           ``ugettext``.
         :param ignore_tags: a set of tag names that should not be localized
@@ -620,7 +620,7 @@ class Translator(DirectiveFactory):
         :param extract_text: whether the content of text nodes should be
                              extracted, or only text in explicit ``gettext``
                              function calls
-        
+
         :note: Changed in 0.6: the `translate` parameter can now be either
                a ``gettext``-style function, or an object compatible with the
                ``NullTransalations`` or ``GNUTranslations`` interface
@@ -633,13 +633,13 @@ class Translator(DirectiveFactory):
     def __call__(self, stream, ctxt=None, translate_text=True,
                  translate_attrs=True):
         """Translate any localizable strings in the given stream.
-        
+
         This function shouldn't be called directly. Instead, an instance of
         the `Translator` class should be registered as a filter with the
         `Template` or the `TemplateLoader`, or applied as a regular stream
         filter. If used as a template filter, it should be inserted in front of
         all the default filters.
-        
+
         :param stream: the markup event stream
         :param ctxt: the template context (not used)
         :param translate_text: whether text nodes should be translated (used
@@ -768,10 +768,10 @@ class Translator(DirectiveFactory):
     def extract(self, stream, gettext_functions=GETTEXT_FUNCTIONS,
                 search_text=True, comment_stack=None):
         """Extract localizable strings from the given template stream.
-        
+
         For every string found, this function yields a ``(lineno, function,
         message, comments)`` tuple, where:
-        
+
         * ``lineno`` is the number of the line on which the string was found,
         * ``function`` is the name of the ``gettext`` function used (if the
           string was extracted from embedded Python code), and
@@ -780,7 +780,7 @@ class Translator(DirectiveFactory):
            arguments).
         *  ``comments`` is a list of comments related to the message, extracted
            from ``i18n:comment`` attributes found in the markup
-        
+
         >>> tmpl = MarkupTemplate('''<html xmlns:py="http://genshi.edgewall.org/">
         ...   <head>
         ...     <title>Example</title>
@@ -797,7 +797,7 @@ class Translator(DirectiveFactory):
         6, None, u'Example'
         7, '_', u'Hello, %(name)s'
         8, 'ngettext', (u'You have %d item', u'You have %d items', None)
-        
+
         :param stream: the event stream to extract strings from; can be a
                        regular stream or a template stream
         :param gettext_functions: a sequence of function names that should be
@@ -805,7 +805,7 @@ class Translator(DirectiveFactory):
                                   functions
         :param search_text: whether the content of text nodes should be
                             extracted (used internally)
-        
+
         :note: Changed in 0.4.1: For a function with multiple string arguments
                (such as ``ngettext``), a single item with a tuple of strings is
                yielded, instead an item for each string argument.
@@ -908,7 +908,7 @@ class Translator(DirectiveFactory):
     def setup(self, template):
         """Convenience function to register the `Translator` filter and the
         related directives with the given template.
-        
+
         :param template: a `Template` instance
         """
         template.filters.insert(0, self)
@@ -930,13 +930,13 @@ class Translator(DirectiveFactory):
 
 class MessageBuffer(object):
     """Helper class for managing internationalized mixed content.
-    
+
     :since: version 0.5
     """
 
     def __init__(self, directive=None):
         """Initialize the message buffer.
-        
+
         :param directive: the directive owning the buffer
         :type directive: I18NDirective
         """
@@ -963,7 +963,7 @@ class MessageBuffer(object):
 
     def append(self, kind, data, pos):
         """Append a stream event to the buffer.
-        
+
         :param kind: the stream event kind
         :param data: the event data
         :param pos: the position of the event in the source
@@ -995,7 +995,7 @@ class MessageBuffer(object):
                     params = "(%s)" % params
                 raise IndexError("%d parameters%s given to 'i18n:%s' but "
                                  "%d or more expressions used in '%s', line %s"
-                                 % (len(self.orig_params), params, 
+                                 % (len(self.orig_params), params,
                                     self.directive.tagname,
                                     len(self.orig_params) + 1,
                                     os.path.basename(pos[0] or
@@ -1005,7 +1005,7 @@ class MessageBuffer(object):
             self._add_event(self.stack[-1], (kind, data, pos))
             self.values[param] = (kind, data, pos)
         else:
-            if kind is START: 
+            if kind is START:
                 self.string.append('[%d:' % self.order)
                 self.stack.append(self.order)
                 self._add_event(self.stack[-1], (kind, data, pos))
@@ -1027,7 +1027,7 @@ class MessageBuffer(object):
     def translate(self, string, regex=re.compile(r'%\((\w+)\)s')):
         """Interpolate the given message translation with the events in the
         buffer and return the translated stream.
-        
+
         :param string: the translated message string
         """
         substream = None
@@ -1122,19 +1122,19 @@ class MessageBuffer(object):
 def parse_msg(string, regex=re.compile(r'(?:\[(\d+)\:)|(?<!\\)\]')):
     """Parse a translated message using Genshi mixed content message
     formatting.
-    
+
     >>> parse_msg("See [1:Help].")
     [(0, 'See '), (1, 'Help'), (0, '.')]
-    
+
     >>> parse_msg("See [1:our [2:Help] page] for details.")
     [(0, 'See '), (1, 'our '), (2, 'Help'), (1, ' page'), (0, ' for details.')]
-    
+
     >>> parse_msg("[2:Details] finden Sie in [1:Hilfe].")
     [(2, 'Details'), (0, ' finden Sie in '), (1, 'Hilfe'), (0, '.')]
-    
+
     >>> parse_msg("[1:] Bilder pro Seite anzeigen.")
     [(1, ''), (0, ' Bilder pro Seite anzeigen.')]
-    
+
     :param string: the translated message string
     :return: a list of ``(order, string)`` tuples
     :rtype: `list`
@@ -1166,17 +1166,17 @@ def parse_msg(string, regex=re.compile(r'(?:\[(\d+)\:)|(?<!\\)\]')):
 
 def extract_from_code(code, gettext_functions):
     """Extract strings from Python bytecode.
-    
+
     >>> from genshi.template.eval import Expression
     >>> expr = Expression('_("Hello")')
     >>> list(extract_from_code(expr, GETTEXT_FUNCTIONS))
     [('_', u'Hello')]
-    
+
     >>> expr = Expression('ngettext("You have %(num)s item", '
     ...                            '"You have %(num)s items", num)')
     >>> list(extract_from_code(expr, GETTEXT_FUNCTIONS))
     [('ngettext', (u'You have %(num)s item', u'You have %(num)s items', None))]
-    
+
     :param code: the `Code` object
     :type code: `genshi.template.eval.Code`
     :param gettext_functions: a sequence of function names
@@ -1218,7 +1218,7 @@ def extract_from_code(code, gettext_functions):
 
 def extract(fileobj, keywords, comment_tags, options):
     """Babel extraction method for Genshi templates.
-    
+
     :param fileobj: the file-like object the messages should be extracted from
     :param keywords: a list of keywords (i.e. function names) that should be
                      recognized as translation functions

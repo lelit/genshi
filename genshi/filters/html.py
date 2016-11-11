@@ -28,7 +28,7 @@ __docformat__ = 'restructuredtext en'
 
 class HTMLFormFiller(object):
     """A stream filter that can populate HTML forms from a dictionary of values.
-    
+
     >>> from genshi.input import HTML
     >>> html = HTML('''<form>
     ...   <p><input type="text" name="foo" /></p>
@@ -45,7 +45,7 @@ class HTMLFormFiller(object):
 
     def __init__(self, name=None, id=None, data=None, passwords=False):
         """Create the filter.
-        
+
         :param name: The name of the form that should be populated. If this
                      parameter is given, only forms where the ``name`` attribute
                      value matches the parameter are processed.
@@ -69,7 +69,7 @@ class HTMLFormFiller(object):
 
     def __call__(self, stream):
         """Apply the filter to the given stream.
-        
+
         :param stream: the markup event stream to filter
         """
         in_form = in_select = in_option = in_textarea = False
@@ -197,37 +197,37 @@ class HTMLFormFiller(object):
 class HTMLSanitizer(object):
     """A filter that removes potentially dangerous HTML tags and attributes
     from the stream.
-    
+
     >>> from genshi import HTML
     >>> html = HTML('<div><script>alert(document.cookie)</script></div>', encoding='utf-8')
     >>> print(html | HTMLSanitizer())
     <div/>
-    
+
     The default set of safe tags and attributes can be modified when the filter
     is instantiated. For example, to allow inline ``style`` attributes, the
     following instantation would work:
-    
+
     >>> html = HTML('<div style="background: #000"></div>', encoding='utf-8')
     >>> sanitizer = HTMLSanitizer(safe_attrs=HTMLSanitizer.SAFE_ATTRS | set(['style']))
     >>> print(html | sanitizer)
     <div style="background: #000"/>
-    
+
     Note that even in this case, the filter *does* attempt to remove dangerous
     constructs from style attributes:
 
     >>> html = HTML('<div style="background: url(javascript:void); color: #000"></div>', encoding='utf-8')
     >>> print(html | sanitizer)
     <div style="color: #000"/>
-    
+
     This handles HTML entities, unicode escapes in CSS and Javascript text, as
     well as a lot of other things. However, the style tag is still excluded by
     default because it is very hard for such sanitizing to be completely safe,
     especially considering how much error recovery current web browsers perform.
-    
+
     It also does some basic filtering of CSS properties that may be used for
     typical phishing attacks. For more sophisticated filtering, this class
     provides a couple of hooks that can be overridden in sub-classes.
-    
+
     :warn: Note that this special processing of CSS is currently only applied to
            style attributes, **not** style elements.
     """
@@ -291,9 +291,9 @@ class HTMLSanitizer(object):
                  safe_schemes=SAFE_SCHEMES, uri_attrs=URI_ATTRS,
                  safe_css=SAFE_CSS):
         """Create the sanitizer.
-        
+
         The exact set of allowed elements and attributes can be configured.
-        
+
         :param safe_tags: a set of tag names that are considered safe
         :param safe_attrs: a set of attribute names that are considered safe
         :param safe_schemes: a set of URI schemes that are considered safe
@@ -360,7 +360,7 @@ class HTMLSanitizer(object):
 
     def __call__(self, stream):
         """Apply the filter to the given stream.
-        
+
         :param stream: the markup event stream to filter
         """
         waiting_for = None
@@ -408,7 +408,7 @@ class HTMLSanitizer(object):
     def is_safe_css(self, propname, value):
         """Determine whether the given css property declaration is to be
         considered safe for inclusion in the output.
-        
+
         :param propname: the CSS property name
         :param value: the value of the property
         :return: whether the property value should be considered safe
@@ -425,7 +425,7 @@ class HTMLSanitizer(object):
     def is_safe_elem(self, tag, attrs):
         """Determine whether the given element should be considered safe for
         inclusion in the output.
-        
+
         :param tag: the tag name of the element
         :type tag: QName
         :param attrs: the element attributes
@@ -445,16 +445,16 @@ class HTMLSanitizer(object):
     def is_safe_uri(self, uri):
         """Determine whether the given URI is to be considered safe for
         inclusion in the output.
-        
+
         The default implementation checks whether the scheme of the URI is in
         the set of allowed URIs (`safe_schemes`).
-        
+
         >>> sanitizer = HTMLSanitizer()
         >>> sanitizer.is_safe_uri('http://example.org/')
         True
         >>> sanitizer.is_safe_uri('javascript:alert(document.cookie)')
         False
-        
+
         :param uri: the URI to check
         :return: `True` if the URI can be considered safe, `False` otherwise
         :rtype: `bool`
@@ -469,27 +469,27 @@ class HTMLSanitizer(object):
 
     def sanitize_css(self, text):
         """Remove potentially dangerous property declarations from CSS code.
-        
+
         In particular, properties using the CSS ``url()`` function with a scheme
         that is not considered safe are removed:
-        
+
         >>> sanitizer = HTMLSanitizer()
         >>> sanitizer.sanitize_css(u'''
         ...   background: url(javascript:alert("foo"));
         ...   color: #000;
         ... ''')
         [u'color: #000']
-        
+
         Also, the proprietary Internet Explorer function ``expression()`` is
         always stripped:
-        
+
         >>> sanitizer.sanitize_css(u'''
         ...   background: #fff;
         ...   color: #000;
         ...   width: e/**/xpression(alert("foo"));
         ... ''')
         [u'background: #fff', u'color: #000']
-        
+
         :param text: the CSS text; this is expected to be `unicode` and to not
                      contain any character or numeric references
         :return: a list of declarations that are considered safe

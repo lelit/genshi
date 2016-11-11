@@ -43,18 +43,18 @@ __docformat__ = 'restructuredtext en'
 class NewTextTemplate(Template):
     r"""Implementation of a simple text-based template engine. This class will
     replace `OldTextTemplate` in a future release.
-    
+
     It uses a more explicit delimiting style for directives: instead of the old
     style which required putting directives on separate lines that were prefixed
     with a ``#`` sign, directives and commenbtsr are enclosed in delimiter pairs
     (by default ``{% ... %}`` and ``{# ... #}``, respectively).
-    
+
     Variable substitution uses the same interpolation syntax as for markup
     languages: simple references are prefixed with a dollar sign, more complex
     expression enclosed in curly braces.
-    
+
     >>> tmpl = NewTextTemplate('''Dear $name,
-    ... 
+    ...
     ... {# This is a comment #}
     ... We have the following items for you:
     ... {% for item in items %}
@@ -74,12 +74,12 @@ class NewTextTemplate(Template):
      * Item 3
     <BLANKLINE>
     <BLANKLINE>
-    
+
     By default, no spaces or line breaks are removed. If a line break should
     not be included in the output, prefix it with a backslash:
-    
+
     >>> tmpl = NewTextTemplate('''Dear $name,
-    ... 
+    ...
     ... {# This is a comment #}\
     ... We have the following items for you:
     ... {% for item in items %}\
@@ -94,12 +94,12 @@ class NewTextTemplate(Template):
      * 2
      * 3
     <BLANKLINE>
-    
+
     Backslashes are also used to escape the start delimiter of directives and
     comments:
 
     >>> tmpl = NewTextTemplate('''Dear $name,
-    ... 
+    ...
     ... \{# This is a comment #}
     ... We have the following items for you:
     ... {% for item in items %}\
@@ -115,7 +115,7 @@ class NewTextTemplate(Template):
      * 2
      * 3
     <BLANKLINE>
-    
+
     :since: version 0.5
     """
     directives = [('def', DefDirective),
@@ -238,14 +238,14 @@ class OldTextTemplate(Template):
     """Legacy implementation of the old syntax text-based templates. This class
     is provided in a transition phase for backwards compatibility. New code
     should use the `NewTextTemplate` class and the improved syntax it provides.
-    
+
     >>> tmpl = OldTextTemplate('''Dear $name,
-    ... 
+    ...
     ... We have the following items for you:
     ... #for item in items
     ...  * $item
     ... #end
-    ... 
+    ...
     ... All the best,
     ... Foobar''')
     >>> print(tmpl.generate(name='Joe', items=[1, 2, 3]).render(encoding=None))

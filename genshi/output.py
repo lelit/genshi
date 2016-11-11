@@ -29,7 +29,7 @@ __docformat__ = 'restructuredtext en'
 
 def encode(iterator, method='xml', encoding=None, out=None):
     """Encode serializer output into a string.
-    
+
     :param iterator: the iterator returned from serializing a stream (basically
                      any iterator that yields unicode objects)
     :param method: the serialization method; determines how characters not
@@ -42,7 +42,7 @@ def encode(iterator, method='xml', encoding=None, out=None):
                 not be `None` (that is, the output must be encoded)
     :return: a `str` or `unicode` object (depending on the `encoding`
              parameter), or `None` if the `out` parameter is provided
-    
+
     :since: version 0.4.1
     :note: Changed in 0.5: added the `out` parameter
     """
@@ -61,13 +61,13 @@ def encode(iterator, method='xml', encoding=None, out=None):
 
 def get_serializer(method='xml', **kwargs):
     """Return a serializer object for the given method.
-    
+
     :param method: the serialization method; can be either "xml", "xhtml",
                    "html", "text", or a custom serializer class
 
     Any additional keyword arguments are passed to the serializer, and thus
     depend on the `method` parameter value.
-    
+
     :see: `XMLSerializer`, `XHTMLSerializer`, `HTMLSerializer`, `TextSerializer`
     :since: version 0.4.1
     """
@@ -159,7 +159,7 @@ class DocType(object):
     def get(cls, name):
         """Return the ``(name, pubid, sysid)`` tuple of the ``DOCTYPE``
         declaration for the specified name.
-        
+
         The following names are recognized in this version:
          * "html" or "html-strict" for the HTML 4.01 strict DTD
          * "html-transitional" for the HTML 4.01 transitional DTD
@@ -172,7 +172,7 @@ class DocType(object):
          * "svg" or "svg-full" for the SVG 1.1 DTD
          * "svg-basic" for the SVG Basic 1.1 DTD
          * "svg-tiny" for the SVG Tiny 1.1 DTD
-        
+
         :param name: the name of the ``DOCTYPE``
         :return: the ``(name, pubid, sysid)`` tuple for the requested
                  ``DOCTYPE``, or ``None`` if the name is not recognized
@@ -195,7 +195,7 @@ class DocType(object):
 
 class XMLSerializer(object):
     """Produces XML text from an event stream.
-    
+
     >>> from genshi.builder import tag
     >>> elem = tag.div(tag.a(href='foo'), tag.br, tag.hr(noshade=True))
     >>> print(''.join(XMLSerializer()(elem.generate())))
@@ -207,7 +207,7 @@ class XMLSerializer(object):
     def __init__(self, doctype=None, strip_whitespace=True,
                  namespace_prefixes=None, cache=True):
         """Initialize the XML serializer.
-        
+
         :param doctype: a ``(name, pubid, sysid)`` tuple that represents the
                         DOCTYPE declaration that should be included at the top
                         of the generated output, or the name of a DOCTYPE as
@@ -304,7 +304,7 @@ class XMLSerializer(object):
 
 class XHTMLSerializer(XMLSerializer):
     """Produces XHTML text from an event stream.
-    
+
     >>> from genshi.builder import tag
     >>> elem = tag.div(tag.a(href='foo'), tag.br, tag.hr(noshade=True))
     >>> print(''.join(XHTMLSerializer()(elem.generate())))
@@ -428,7 +428,7 @@ class XHTMLSerializer(XMLSerializer):
 
 class HTMLSerializer(XHTMLSerializer):
     """Produces HTML text from an event stream.
-    
+
     >>> from genshi.builder import tag
     >>> elem = tag.div(tag.a(href='foo'), tag.br, tag.hr(noshade=True))
     >>> print(''.join(HTMLSerializer()(elem.generate())))
@@ -442,7 +442,7 @@ class HTMLSerializer(XHTMLSerializer):
 
     def __init__(self, doctype=None, strip_whitespace=True, cache=True):
         """Initialize the HTML serializer.
-        
+
         :param doctype: a ``(name, pubid, sysid)`` tuple that represents the
                         DOCTYPE declaration that should be included at the top
                         of the generated output
@@ -539,10 +539,10 @@ class HTMLSerializer(XHTMLSerializer):
 
 class TextSerializer(object):
     """Produces plain text from an event stream.
-    
+
     Only text events are included in the output. Unlike the other serializer,
     special XML characters are not escaped:
-    
+
     >>> from genshi.builder import tag
     >>> elem = tag.div(tag.a('<Hello!>', href='foo'), tag.br)
     >>> print(elem)
@@ -552,11 +552,11 @@ class TextSerializer(object):
 
     If text events contain literal markup (instances of the `Markup` class),
     that markup is by default passed through unchanged:
-    
+
     >>> elem = tag.div(Markup('<a href="foo">Hello &amp; Bye!</a><br/>'))
     >>> print(elem.generate().render(TextSerializer, encoding=None))
     <a href="foo">Hello &amp; Bye!</a><br/>
-    
+
     You can use the ``strip_markup`` to change this behavior, so that tags and
     entities are stripped from the output (or in the case of entities,
     replaced with the equivalent character):
@@ -568,7 +568,7 @@ class TextSerializer(object):
 
     def __init__(self, strip_markup=False):
         """Create the serializer.
-        
+
         :param strip_markup: whether markup (tags and encoded characters) found
                              in the text should be removed
         """
@@ -612,9 +612,9 @@ EMPTY = EmptyTagFilter.EMPTY
 class NamespaceFlattener(object):
     r"""Output stream filter that removes namespace information from the stream,
     instead adding namespace attributes and prefixes as needed.
-    
+
     :param prefixes: optional mapping of namespace URIs to prefixes
-    
+
     >>> from genshi.input import XML
     >>> xml = XML('''<doc xmlns="NS1" xmlns:two="NS2">
     ...   <two:item/>
@@ -744,12 +744,12 @@ class WhitespaceFilter(object):
 
     def __init__(self, preserve=None, noescape=None):
         """Initialize the filter.
-        
+
         :param preserve: a set or sequence of tag names for which white-space
                          should be preserved
         :param noescape: a set or sequence of tag names for which text content
                          should not be escaped
-        
+
         The `noescape` set is expected to refer to elements that cannot contain
         further child elements (such as ``<style>`` or ``<script>`` in HTML
         documents).

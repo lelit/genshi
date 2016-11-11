@@ -179,7 +179,7 @@ class GenericStrategy(object):
 
                                 if len(cou) < cnum + 1:
                                     cou.append(0)
-                                cou[cnum] += 1 
+                                cou[cnum] += 1
 
                                 # it is bad now
                                 if cou[cnum] != int(pretval):
@@ -495,7 +495,7 @@ class SingleStepStrategy(object):
                                                # coerced to float
                         if len(counters) < cnum + 1:
                             counters.append(0)
-                        counters[cnum] += 1 
+                        counters[cnum] += 1
                         if counters[cnum] != int(pretval):
                             pretval = False
                         cnum += 1
@@ -512,7 +512,7 @@ class SingleStepStrategy(object):
 
 class Path(object):
     """Implements basic XPath support on streams.
-    
+
     Instances of this class represent a "compiled" XPath expression, and
     provide methods for testing the path against a stream, as well as
     extracting a substream matching that path.
@@ -522,7 +522,7 @@ class Path(object):
 
     def __init__(self, text, filename=None, lineno=-1):
         """Create the path object from a string.
-        
+
         :param text: the path expression
         :param filename: the name of the file in which the path expression was
                          found (used in error messages)
@@ -552,18 +552,18 @@ class Path(object):
 
     def select(self, stream, namespaces=None, variables=None):
         """Returns a substream of the given stream that matches the path.
-        
+
         If there are no matches, this method returns an empty stream.
-        
+
         >>> from genshi.input import XML
         >>> xml = XML('<root><elem><child>Text</child></elem></root>')
-        
+
         >>> print(Path('.//child').select(xml))
         <child>Text</child>
-        
+
         >>> print(Path('.//child/text()').select(xml))
         Text
-        
+
         :param stream: the stream to select from
         :param namespaces: (optional) a mapping of namespace prefixes to URIs
         :param variables: (optional) a mapping of variable names to values
@@ -600,7 +600,7 @@ class Path(object):
     def test(self, ignore_context=False):
         """Returns a function that can be used to track whether the path matches
         a specific stream event.
-        
+
         The function returned expects the positional arguments ``event``,
         ``namespaces`` and ``variables``. The first is a stream event, while the
         latter two are a mapping of namespace prefixes to URIs, and a mapping
@@ -608,10 +608,10 @@ class Path(object):
         accepts an ``updateonly`` keyword argument that default to ``False``. If
         it is set to ``True``, the function only updates its internal state,
         but does not perform any tests or return a result.
-        
+
         If the path matches the event, the function returns the match (for
         example, a `START` or `TEXT` event.) Otherwise, it returns ``None``.
-        
+
         >>> from genshi.input import XML
         >>> xml = XML('<root><elem><child id="1"/></elem><child id="2"/></root>')
         >>> test = Path('child').test()
@@ -620,7 +620,7 @@ class Path(object):
         ...     if test(event, namespaces, variables):
         ...         print('%s %r' % (event[0], event[1]))
         START (QName('child'), Attrs([(QName('id'), u'2')]))
-        
+
         :param ignore_context: if `True`, the path is interpreted like a pattern
                                in XSLT, meaning for example that it will match
                                at any depth
@@ -696,11 +696,11 @@ class PathParser(object):
     def parse(self):
         """Parses the XPath expression and returns a list of location path
         tests.
-        
+
         For union expressions (such as `*|text()`), this function returns one
         test for each operand in the union. For patch expressions that don't
         use the union operator, the function always returns a list of size 1.
-        
+
         Each path test in turn is a sequence of tests that correspond to the
         location steps, each tuples of the form `(axis, testfunc, predicates)`
         """
@@ -722,7 +722,7 @@ class PathParser(object):
                         # hack to make //* match every node - also root
                         self.next_token()
                         axis, nodetest, predicates = self._location_step()
-                        steps.append((DESCENDANT_OR_SELF, nodetest, 
+                        steps.append((DESCENDANT_OR_SELF, nodetest,
                                       predicates))
                         if self.at_end or not self.cur_token.startswith('/'):
                             break

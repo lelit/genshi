@@ -62,7 +62,7 @@ class Code(object):
     def __init__(self, source, filename=None, lineno=-1, lookup='strict',
                  xform=None):
         """Create the code object, either from a string, or from an AST node.
-        
+
         :param source: either a string containing the source code, or an AST
                        node
         :param filename: the (preferably absolute) name of the file containing
@@ -136,16 +136,16 @@ class Expression(Code):
     3
     >>> Expression('dict["some"]').evaluate(data)
     'thing'
-    
+
     Similar to e.g. Javascript, expressions in templates can use the dot
     notation for attribute access to access items in mappings:
-    
+
     >>> Expression('dict.some').evaluate(data)
     'thing'
-    
+
     This also works the other way around: item access can be used to access
     any object attribute:
-    
+
     >>> class MyClass(object):
     ...     myattr = 'Bar'
     >>> data = dict(mine=MyClass(), key='myattr')
@@ -155,11 +155,11 @@ class Expression(Code):
     'Bar'
     >>> Expression('mine[key]').evaluate(data)
     'Bar'
-    
+
     All of the standard Python operators are available to template expressions.
     Built-in functions such as ``len()`` are also available in template
     expressions:
-    
+
     >>> data = dict(items=[1, 2, 3])
     >>> Expression('len(items)').evaluate(data)
     3
@@ -169,7 +169,7 @@ class Expression(Code):
 
     def evaluate(self, data):
         """Evaluate the expression against the given data dictionary.
-        
+
         :param data: a mapping containing the data to evaluate against
         :return: the result of the evaluation
         """
@@ -191,7 +191,7 @@ class Suite(Code):
 
     def execute(self, data):
         """Execute the suite in the given data dictionary.
-        
+
         :param data: a mapping containing the data to execute in
         """
         __traceback_hide__ = 'before_and_this'
@@ -205,7 +205,7 @@ UNDEFINED = object()
 class UndefinedError(TemplateRuntimeError):
     """Exception thrown when a template expression attempts to access a variable
     not defined in the context.
-    
+
     :see: `LenientLookup`, `StrictLookup`
     """
     def __init__(self, name, owner=UNDEFINED):
@@ -218,12 +218,12 @@ class UndefinedError(TemplateRuntimeError):
 
 class Undefined(object):
     """Represents a reference to an undefined variable.
-    
+
     Unlike the Python runtime, template expressions can refer to an undefined
     variable without causing a `NameError` to be raised. The result will be an
     instance of the `Undefined` class, which is treated the same as ``False`` in
     conditions, but raise an exception on any other operation:
-    
+
     >>> foo = Undefined('foo')
     >>> bool(foo)
     False
@@ -231,11 +231,11 @@ class Undefined(object):
     []
     >>> print(foo)
     undefined
-    
+
     However, calling an undefined variable, or trying to access an attribute
     of that variable, will raise an exception that includes the name used to
     reference that undefined variable.
-    
+
     >>> try:
     ...     foo('bar')
     ... except UndefinedError, e:
@@ -247,14 +247,14 @@ class Undefined(object):
     ... except UndefinedError, e:
     ...     print e.msg
     "foo" not defined
-    
+
     :see: `LenientLookup`
     """
     __slots__ = ['_name', '_owner']
 
     def __init__(self, name, owner=UNDEFINED):
         """Initialize the object.
-        
+
         :param name: the name of the reference
         :param owner: the owning object, if the variable is accessed as a member
         """
@@ -345,7 +345,7 @@ class LookupBase(object):
     def undefined(cls, key, owner=UNDEFINED):
         """Can be overridden by subclasses to specify behavior when undefined
         variables are accessed.
-        
+
         :param key: the name of the variable
         :param owner: the owning object, if the variable is accessed as a member
         """
@@ -354,25 +354,25 @@ class LookupBase(object):
 
 class LenientLookup(LookupBase):
     """Default variable lookup mechanism for expressions.
-    
+
     When an undefined variable is referenced using this lookup style, the
     reference evaluates to an instance of the `Undefined` class:
-    
+
     >>> expr = Expression('nothing', lookup='lenient')
     >>> undef = expr.evaluate({})
     >>> undef
     <Undefined 'nothing'>
-    
+
     The same will happen when a non-existing attribute or item is accessed on
     an existing object:
-    
+
     >>> expr = Expression('something.nil', lookup='lenient')
     >>> expr.evaluate({'something': dict()})
     <Undefined 'nil'>
-    
+
     See the documentation of the `Undefined` class for details on the behavior
     of such objects.
-    
+
     :see: `StrictLookup`
     """
 
@@ -385,20 +385,20 @@ class LenientLookup(LookupBase):
 
 class StrictLookup(LookupBase):
     """Strict variable lookup mechanism for expressions.
-    
+
     Referencing an undefined variable using this lookup style will immediately
     raise an ``UndefinedError``:
-    
+
     >>> expr = Expression('nothing', lookup='strict')
     >>> try:
     ...     expr.evaluate({})
     ... except UndefinedError, e:
     ...     print e.msg
     "nothing" not defined
-    
+
     The same happens when a non-existing attribute or item is accessed on an
     existing object:
-    
+
     >>> expr = Expression('something.nil', lookup='strict')
     >>> try:
     ...     expr.evaluate({'something': dict()})
