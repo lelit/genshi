@@ -1193,9 +1193,14 @@ def extract_from_code(code, gettext_functions):
                     strings.append(str(arg.s, 'utf-8'))
                 elif arg:
                     strings.append(None)
-            [_add(arg) for arg in node.args]
-            _add(node.starargs)
-            _add(node.kwargs)
+            for arg in node.args:
+                _add(arg)
+            # FIXME: this is weird!
+            # Original code did _add(node.kwargs), but doing the following,
+            # which seems equivalent, causes a failure in tests/i18n.py:1917,
+            # in test_extraction_with_keyword_arg()...
+            #for kwarg in node.keywords:
+            #    _add(kwarg.value)
             if len(strings) == 1:
                 strings = strings[0]
             else:
