@@ -636,29 +636,22 @@ class ASTCodeGenerator(object):
                 self._write(', ')
             first = False
             self.visit(arg)
-
         for keyword in node.keywords:
             if not first:
                 self._write(', ')
             first = False
-            # keyword = (identifier arg, expr value)
-            self._write(keyword.arg)
-            self._write('=')
+            if keyword.arg is None:
+                self._write('**')
+            else:
+                # keyword = (identifier arg, expr value)
+                self._write(keyword.arg)
+                self._write('=')
             self.visit(keyword.value)
-        if getattr(node, 'starargs', None):
-            if not first:
-                self._write(', ')
-            first = False
-            self._write('*')
-            self.visit(node.starargs)
-
-        if getattr(node, 'kwargs', None):
-            if not first:
-                self._write(', ')
-            first = False
-            self._write('**')
-            self.visit(node.kwargs)
         self._write(')')
+
+    def visit_Starred(self, node):
+        self._write('*')
+        self.visit(node.value)
 
     # Repr(expr value)
     def visit_Repr(self, node):
@@ -845,5 +838,7 @@ class ASTTransformer(object):
     visit_Slice = _clone
     visit_ExtSlice = _clone
     visit_Index = _clone
+
+    visit_Starred = _clone
 
     del _clone
