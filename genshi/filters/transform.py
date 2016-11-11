@@ -116,10 +116,11 @@ class PushBackStream(object):
             else:
                 try:
                     event = next(self.stream)
-                    yield event
                 except StopIteration:
                     if self.peek is None:
-                        raise
+                        break
+                else:
+                    yield event
 
 
 class Transformer(object):

@@ -270,7 +270,10 @@ COMMENT = Stream.COMMENT
 def _ensure(stream):
     """Ensure that every item on the stream is actually a markup event."""
     stream = iter(stream)
-    event = next(stream)
+    try:
+        event = next(stream)
+    except StopIteration:
+        return
 
     # Check whether the iterable is a real markup event stream by examining the
     # first item it yields; if it's not we'll need to do some conversion
@@ -286,8 +289,7 @@ def _ensure(stream):
     # This looks like a markup event stream, so we'll just pass it through
     # unchanged
     yield event
-    for event in stream:
-        yield event
+    yield from stream
 
 
 class Attrs(tuple):
