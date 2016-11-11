@@ -1520,7 +1520,7 @@ class LessThanOrEqualOperator(object):
 
 _operator_map = {'=': EqualsOperator, '!=': NotEqualsOperator,
                  '>': GreaterThanOperator, '>=': GreaterThanOrEqualOperator,
-                 '<': LessThanOperator, '>=': LessThanOrEqualOperator}
+                 '<': LessThanOperator, '<=': LessThanOrEqualOperator}
 
 
 _DOTSLASHSLASH = (DESCENDANT_OR_SELF, PrincipalTypeTest(None), ())
