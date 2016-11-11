@@ -154,7 +154,6 @@ class ASTCodeGenerator(object):
     # FunctionDef(identifier name, arguments args,
     #                           stmt* body, expr* decorator_list)
     def visit_FunctionDef(self, node):
-        decarators = ()
         if hasattr(node, 'decorator_list'):
             decorators = getattr(node, 'decorator_list')
         else: # different name in earlier Python versions

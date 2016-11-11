@@ -131,7 +131,6 @@ class GenericStrategy(object):
 
             # length of real part of path - we omit attribute axis
             real_len = len(steps) - ((steps[-1][0] == ATTRIBUTE) or 1 and 0)
-            last_checked = -1
 
             # places where we have to check for match, are these
             # provided by parent
