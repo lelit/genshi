@@ -10,3 +10,11 @@ For more information please see the documentation in the `doc`
 directory, and visit the Genshi web site:
 
   <http://genshi.edgewall.org/>
+
+
+Python 3.x only version
+-----------------------
+
+This is actually a fork of the original Genshi library that targets
+**only** Python 3.5 and up (maybe also 3.4, I didn't tried it).
+
