@@ -13,10 +13,7 @@
 
 """Core classes for markup processing."""
 
-try:
-    reduce # builtin in Python < 3
-except NameError:
-    from functools import reduce
+from functools import reduce
 import sys
 from itertools import chain
 import operator
@@ -95,7 +92,7 @@ class Stream(object):
         >>> from genshi.input import HTML
         >>> html = HTML('''<p onclick="alert('Whoa')">Hello, world!</p>''', encoding='utf-8')
         >>> print(html)
-        <p onclick="alert('Whoa')">Hello, world!</p>
+        <p onclick="alert(&#39;Whoa&#39;)">Hello, world!</p>
 
         A filter such as the HTML sanitizer can be applied to that stream using
         the pipe notation as follows:
@@ -493,7 +490,7 @@ class Markup(str):
     @classmethod
     def escape(cls, text, quotes=True):
         """Create a Markup instance from a string and escape special characters
-        it may contain (<, >, & and \").
+        it may contain (<, >, &, ' and \").
 
         >>> escape('"1 < 2"')
         <Markup '&#34;1 &lt; 2&#34;'>
@@ -506,8 +503,8 @@ class Markup(str):
         <Markup '"1 &lt; 2"'>
 
         :param text: the text to escape
-        :param quotes: if ``True``, double quote characters are escaped in
-                       addition to the other special characters
+        :param quotes: if ``True``, single and double quote characters are
+                       escaped in addition to the other special characters
         :return: the escaped `Markup` string
         :rtype: `Markup`
         """
@@ -522,7 +519,8 @@ class Markup(str):
                    .replace('<', '&lt;') \
                    .replace('>', '&gt;')
         if quotes:
-            text = text.replace('"', '&#34;')
+            text = text.replace('"', '&#34;') \
+                       .replace("'", '&#39;')
         return cls(text)
 
     def unescape(self):
@@ -538,9 +536,10 @@ class Markup(str):
         if not self:
             return ''
         return str(self).replace('&#34;', '"') \
-                            .replace('&gt;', '>') \
-                            .replace('&lt;', '<') \
-                            .replace('&amp;', '&')
+                        .replace('&#39;', "'") \
+                        .replace('&gt;', '>') \
+                        .replace('&lt;', '<') \
+                        .replace('&amp;', '&')
 
     def stripentities(self, keepxmlentities=False):
         """Return a copy of the text with any character or numeric entities
@@ -567,12 +566,10 @@ class Markup(str):
 
 
 try:
-    from genshi._speedups import Markup
+    from genshi._speedups import escape
 except ImportError:
-    pass # just use the Python implementation
-
-
-escape = Markup.escape
+    # just use the Python implementation
+    escape = Markup.escape
 
 
 def unescape(text):
@@ -738,10 +735,5 @@ class QName(str):
     def __getnewargs__(self):
         return (self.lstrip('{'),)
 
-    if sys.version_info[0] == 2:
-        # Only use stringrepr in python 2
-        def __repr__(self):
-            return '%s(%s)' % (type(self).__name__, stringrepr(self.lstrip('{')))
-    else:
-        def __repr__(self):
-            return '%s(%r)' % (type(self).__name__, self.lstrip('{'))
+    def __repr__(self):
+        return '%s(%r)' % (type(self).__name__, self.lstrip('{'))

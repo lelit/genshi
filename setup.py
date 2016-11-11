@@ -12,19 +12,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://genshi.edgewall.org/log/.
 
-from distutils.cmd import Command
-from distutils.command.build_ext import build_ext
-from distutils.errors import CCompilerError, DistutilsPlatformError
-import doctest
-from glob import glob
 import os
 try:
-    from setuptools import setup, Extension, Feature
-    from setuptools.command.bdist_egg import bdist_egg
+    from setuptools import setup, Extension
 except ImportError:
     from distutils.core import setup, Extension
-    Feature = None
-    bdist_egg = None
 import sys
 
 sys.path.append(os.path.join('doc', 'common'))
@@ -33,75 +25,8 @@ try:
 except ImportError:
     build_doc = test_doc = None
 
-_speedup_available = False
 
-is_pypy = hasattr(sys, 'pypy_version_info')
-
-class optional_build_ext(build_ext):
-    # This class allows C extension building to fail.
-    def run(self):
-        try:
-            build_ext.run(self)
-        except DistutilsPlatformError:
-            _etype, e, _tb = sys.exc_info()
-            self._unavailable(e)
-
-    def build_extension(self, ext):
-        try:
-            build_ext.build_extension(self, ext)
-            global _speedup_available
-            _speedup_available = True
-        except CCompilerError:
-            _etype, e, _tb = sys.exc_info()
-            self._unavailable(e)
-
-    def _unavailable(self, exc):
-        print(('*' * 70))
-        print("""WARNING:
-An optional C extension could not be compiled, speedups will not be
-available.""")
-        print(('*' * 70))
-        print(exc)
-
-
-if Feature:
-    # Optional C extension module for speeding up Genshi:
-    # Not activated by default on:
-    # - PyPy (where it harms performance)
-    # - CPython >= 3.3 (the new Unicode C API is not supported yet)
-    speedups = Feature(
-        "optional C speed-enhancements",
-        standard = not is_pypy and sys.version_info < (3, 3),
-        ext_modules = [
-            Extension('genshi._speedups', ['genshi/_speedups.c']),
-        ],
-    )
-else:
-    speedups = None
-
-
-# Setuptools need some help figuring out if the egg is "zip_safe" or not
-if bdist_egg:
-    class my_bdist_egg(bdist_egg):
-        def zip_safe(self):
-            return not _speedup_available and bdist_egg.zip_safe(self)
-
-
-cmdclass = {'build_doc': build_doc, 'test_doc': test_doc,
-            'build_ext': optional_build_ext}
-if bdist_egg:
-    cmdclass['bdist_egg'] = my_bdist_egg
-
-
-# include tests for python3 setup.py test (needed when creating
-# source distributions on python2 too so that they work on python3)
-packages = [
-    'genshi', 'genshi.filters', 'genshi.template',
-    'genshi.tests', 'genshi.filters.tests',
-    'genshi.template.tests',
-    'genshi.template.tests.templates',
-]
-
+cmdclass = {'build_doc': build_doc, 'test_doc': test_doc}
 
 setup(
     name = 'Genshi',
@@ -125,15 +50,23 @@ feature is a template language, which is heavily inspired by Kid.""",
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML',
         'Topic :: Text Processing :: Markup :: XML'
     ],
     keywords = ['python.templating.engines'],
-    packages = packages,
+
+    packages = [
+        'genshi', 'genshi.filters', 'genshi.template',
+        'genshi.tests', 'genshi.filters.tests',
+        'genshi.template.tests',
+        'genshi.template.tests.templates',
+    ],
+
     test_suite = 'genshi.tests.suite',
 
     extras_require = {
@@ -143,14 +76,17 @@ feature is a template language, which is heavily inspired by Kid.""",
     entry_points = """
     [babel.extractors]
     genshi = genshi.filters.i18n:extract[i18n]
-    
+
     [python.templating.engines]
     genshi = genshi.template.plugin:MarkupTemplateEnginePlugin[plugin]
     genshi-markup = genshi.template.plugin:MarkupTemplateEnginePlugin[plugin]
     genshi-text = genshi.template.plugin:TextTemplateEnginePlugin[plugin]
     """,
 
-    features = {'speedups': speedups},
+    ext_modules = [
+        Extension('genshi._speedups', ['genshi/_speedups.c']),
+    ],
+
     cmdclass = cmdclass,
 
     include_package_data = True,
