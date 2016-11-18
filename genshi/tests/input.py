@@ -12,12 +12,12 @@
 # history and logs, available at http://genshi.edgewall.org/log/.
 
 import doctest
+from io import StringIO, BytesIO
 import sys
 import unittest
 
 from genshi.core import Attrs, Stream
 from genshi.input import XMLParser, HTMLParser, ParseError
-from genshi.compat import StringIO, BytesIO
 
 
 class XMLParserTestCase(unittest.TestCase):

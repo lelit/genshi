@@ -19,12 +19,12 @@ from itertools import chain
 import codecs
 import html.entities as entities
 import html.parser as html
+from io import BytesIO, StringIO
 from xml.parsers import expat
 
 from genshi.core import Attrs, QName, Stream, stripentities
 from genshi.core import START, END, XML_DECL, DOCTYPE, TEXT, START_NS, \
                         END_NS, START_CDATA, END_CDATA, PI, COMMENT
-from genshi.compat import StringIO, BytesIO
 
 
 __all__ = ['ET', 'ParseError', 'XMLParser', 'XML', 'HTMLParser', 'HTML']

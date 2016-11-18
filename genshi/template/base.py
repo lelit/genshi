@@ -14,10 +14,10 @@
 """Basic templating functionality."""
 
 from collections import deque
+from io import BytesIO, StringIO
 import os
 import sys
 
-from genshi.compat import StringIO, BytesIO
 from genshi.core import Attrs, Stream, StreamEventKind, START, TEXT, _ensure
 from genshi.input import ParseError
 

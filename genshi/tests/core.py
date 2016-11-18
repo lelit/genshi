@@ -12,13 +12,13 @@
 # history and logs, available at http://genshi.edgewall.org/log/.
 
 import doctest
+from io import StringIO, BytesIO
 import pickle
 import unittest
 
 from genshi import core
 from genshi.core import Markup, Attrs, Namespace, QName, escape, unescape
 from genshi.input import XML, ParseError
-from genshi.compat import StringIO, BytesIO
 
 
 class StreamTestCase(unittest.TestCase):

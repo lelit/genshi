@@ -44,18 +44,6 @@ else:
     def isstring(obj):
         return isinstance(obj, str)
 
-# We need to differentiate between StringIO and BytesIO in places
-
-if IS_PYTHON2:
-    from io import StringIO
-    try:
-        from io import StringIO as BytesIO
-    except ImportError:
-        BytesIO = StringIO
-else:
-    from io import StringIO, BytesIO
-
-
 # We want to test bytestring input to some stuff.
 
 if IS_PYTHON2:

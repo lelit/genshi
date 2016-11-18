@@ -12,6 +12,7 @@
 # history and logs, available at http://genshi.edgewall.org/log/.
 
 import doctest
+from io import BytesIO
 import os
 import pickle
 import sys
@@ -22,7 +23,7 @@ from genshi.core import Markup
 from genshi.template.base import Context
 from genshi.template.eval import Expression, Suite, Undefined, UndefinedError, \
                                  UNDEFINED
-from genshi.compat import BytesIO, IS_PYTHON2, wrapped_bytes
+from genshi.compat import IS_PYTHON2, wrapped_bytes
 
 
 class ExpressionTestCase(unittest.TestCase):

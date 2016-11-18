@@ -12,6 +12,7 @@
 # history and logs, available at http://genshi.edgewall.org/log/.
 
 import doctest
+from io import BytesIO, StringIO
 import os
 import pickle
 import shutil
@@ -19,7 +20,6 @@ import sys
 import tempfile
 import unittest
 
-from genshi.compat import BytesIO, StringIO
 from genshi.core import Markup
 from genshi.input import XML
 from genshi.template.base import BadDirectiveError, TemplateSyntaxError
