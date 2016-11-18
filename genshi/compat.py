@@ -44,18 +44,6 @@ else:
     def isstring(obj):
         return isinstance(obj, str)
 
-# We want to test bytestring input to some stuff.
-
-if IS_PYTHON2:
-    def wrapped_bytes(bstr):
-        assert bstr.startswith('b')
-        return bstr[1:]
-else:
-    def wrapped_bytes(bstr):
-        assert bstr.startswith('b')
-        return bstr
-
-
 # We do some scary stuff with CodeType() in template/eval.py
 
 if IS_PYTHON2:

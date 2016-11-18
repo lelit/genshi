@@ -23,7 +23,7 @@ from genshi.core import Markup
 from genshi.template.base import Context
 from genshi.template.eval import Expression, Suite, Undefined, UndefinedError, \
                                  UNDEFINED
-from genshi.compat import IS_PYTHON2, wrapped_bytes
+from genshi.compat import IS_PYTHON2
 
 
 class ExpressionTestCase(unittest.TestCase):
@@ -59,8 +59,7 @@ class ExpressionTestCase(unittest.TestCase):
     def test_str_literal(self):
         self.assertEqual('foo', Expression('"foo"').evaluate({}))
         self.assertEqual('foo', Expression('"""foo"""').evaluate({}))
-        self.assertEqual('foo'.encode('utf-8'),
-                         Expression(wrapped_bytes("b'foo'")).evaluate({}))
+        self.assertEqual('foo'.encode('utf-8'), Expression("b'foo'").evaluate({}))
         self.assertEqual('foo', Expression("'''foo'''").evaluate({}))
         self.assertEqual('foo', Expression("u'foo'").evaluate({}))
         self.assertEqual('foo', Expression("r'foo'").evaluate({}))
@@ -74,7 +73,7 @@ class ExpressionTestCase(unittest.TestCase):
         # non-ASCII characters.
         # On Py3k, we have no need to do this as non-prefixed strings aren't
         # raw.
-        expr = Expression(wrapped_bytes(r"b'\xc3\xbe'"))
+        expr = Expression(r"b'\xc3\xbe'")
         if IS_PYTHON2:
             self.assertEqual('þ', expr.evaluate({}))
         else:
