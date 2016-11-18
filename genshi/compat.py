@@ -20,21 +20,6 @@ from types import CodeType
 IS_PYTHON2 = (sys.version_info[0] == 2)
 
 
-# This function should only be called in Python 2, and will fail in Python 3
-
-if IS_PYTHON2:
-    def stringrepr(string):
-        ascii = string.encode('ascii', 'backslashreplace')
-        quoted = "'" +  ascii.replace("'", "\\'") + "'"
-        if len(ascii) > len(string):
-            return 'u' + quoted
-        return quoted
-else:
-    def stringrepr(string):
-        raise RuntimeError(
-                'Python 2 compatibility function. Not usable in Python 3.')
-
-
 # We do some scary stuff with CodeType() in template/eval.py
 
 if IS_PYTHON2:
