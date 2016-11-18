@@ -24,8 +24,7 @@ from genshi.template.astutil import ASTTransformer, ASTCodeGenerator, \
 from genshi.template.base import TemplateRuntimeError
 from genshi.util import flatten
 
-from genshi.compat import get_code_params, build_code_chunk, isstring, \
-                          IS_PYTHON2
+from genshi.compat import get_code_params, build_code_chunk, IS_PYTHON2
 
 __all__ = ['Code', 'Expression', 'Suite', 'LenientLookup', 'StrictLookup',
            'Undefined', 'UndefinedError']
@@ -475,7 +474,7 @@ class TemplateASTTransformer(ASTTransformer):
     def _process(self, names, node):
         if not IS_PYTHON2 and isinstance(node, _ast.arg):
             names.add(node.arg)
-        elif isstring(node):
+        elif isinstance(node, str):
             names.add(node)
         elif isinstance(node, _ast.Name):
             names.add(node.id)

@@ -35,15 +35,6 @@ else:
                 'Python 2 compatibility function. Not usable in Python 3.')
 
 
-# We need to test if an object is an instance of a string type in places
-
-if IS_PYTHON2:
-    def isstring(obj):
-        return isinstance(obj, str)
-else:
-    def isstring(obj):
-        return isinstance(obj, str)
-
 # We do some scary stuff with CodeType() in template/eval.py
 
 if IS_PYTHON2:

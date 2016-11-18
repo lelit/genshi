@@ -18,7 +18,6 @@ import _ast
 def parse(source, mode):
     return compile(source, '', mode, _ast.PyCF_ONLY_AST)
 
-from genshi.compat import isstring
 
 __docformat__ = 'restructuredtext en'
 
@@ -129,7 +128,7 @@ class ASTCodeGenerator(object):
         if getattr(node, 'vararg', None):
             write_possible_comma()
             self._write('*')
-            if isstring(node.vararg):
+            if isinstance(node.vararg, str):
                 self._write(node.vararg)
             else:
                 self.visit(node.vararg)
@@ -138,7 +137,7 @@ class ASTCodeGenerator(object):
         if getattr(node, 'kwarg', None):
             write_possible_comma()
             self._write('**')
-            if isstring(node.kwarg):
+            if isinstance(node.kwarg, str):
                 self._write(node.kwarg)
             else:
                 self.visit(node.kwarg)
