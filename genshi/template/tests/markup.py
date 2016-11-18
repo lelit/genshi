@@ -247,11 +247,9 @@ class MarkupTemplateTestCase(unittest.TestCase):
         """
         tmpl = MarkupTemplate("""<?xml version="1.0"?>
         <Test xmlns:py="http://genshi.edgewall.org/">
-          <Size py:if="0" xmlns:t="test">Size</Size>
-          <Item/>
+          <Size py:if="0" xmlns:t="test">Size</Size><Item/>
         </Test>""")
         self.assertEqual("""<?xml version="1.0"?>\n<Test>
-
           <Item/>
         </Test>""", str(tmpl.generate()))
 
