@@ -21,7 +21,6 @@ from genshi.core import Attrs
 from genshi.template import MarkupTemplate, Context
 from genshi.filters.i18n import Translator, extract
 from genshi.input import HTML
-from genshi.compat import IS_PYTHON2
 
 
 class DummyTranslations(NullTranslations):
@@ -40,33 +39,19 @@ class DummyTranslations(NullTranslations):
     def _domain_call(self, func, domain, *args, **kwargs):
         return getattr(self._domains.get(domain, self), func)(*args, **kwargs)
 
-    if IS_PYTHON2:
-        def ugettext(self, message):
-            missing = object()
-            tmsg = self._catalog.get(message, missing)
-            if tmsg is missing:
-                if self._fallback:
-                    return self._fallback.ugettext(message)
-                return str(message)
-            return tmsg
-    else:
-        def gettext(self, message):
-            missing = object()
-            tmsg = self._catalog.get(message, missing)
-            if tmsg is missing:
-                if self._fallback:
-                    return self._fallback.gettext(message)
-                return str(message)
-            return tmsg
+    def gettext(self, message):
+        missing = object()
+        tmsg = self._catalog.get(message, missing)
+        if tmsg is missing:
+            if self._fallback:
+                return self._fallback.gettext(message)
+            return str(message)
+        return tmsg
 
-    if IS_PYTHON2:
-        def dugettext(self, domain, message):
-            return self._domain_call('ugettext', domain, message)
-    else:
-        def dgettext(self, domain, message):
-            return self._domain_call('gettext', domain, message)
+    def dgettext(self, domain, message):
+        return self._domain_call('gettext', domain, message)
 
-    def ungettext(self, msgid1, msgid2, n):
+    def ngettext(self, msgid1, msgid2, n):
         try:
             return self._catalog[(msgid1, self.plural(n))]
         except KeyError:
@@ -77,16 +62,8 @@ class DummyTranslations(NullTranslations):
             else:
                 return msgid2
 
-    if not IS_PYTHON2:
-        ngettext = ungettext
-        del ungettext
-
-    if IS_PYTHON2:
-        def dungettext(self, domain, singular, plural, numeral):
-            return self._domain_call('ungettext', domain, singular, plural, numeral)
-    else:
-        def dngettext(self, domain, singular, plural, numeral):
-            return self._domain_call('ngettext', domain, singular, plural, numeral)
+    def dngettext(self, domain, singular, plural, numeral):
+        return self._domain_call('ngettext', domain, singular, plural, numeral)
 
 
 class TranslatorTestCase(unittest.TestCase):
@@ -1819,10 +1796,7 @@ class DomainDirectiveTestCase(unittest.TestCase):
             loader = TemplateLoader([dirname], callback=callback)
             tmpl = loader.load('tmpl10.html')
 
-            if IS_PYTHON2:
-                dgettext = translations.dugettext
-            else:
-                dgettext = translations.dgettext
+            dgettext = translations.dgettext
 
             self.assertEqual("""<html>
                         <div>Included tmpl0</div>

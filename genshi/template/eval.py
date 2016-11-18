@@ -24,12 +24,23 @@ from genshi.template.astutil import ASTTransformer, ASTCodeGenerator, \
 from genshi.template.base import TemplateRuntimeError
 from genshi.util import flatten
 
-from genshi.compat import get_code_params, build_code_chunk, IS_PYTHON2
-
 __all__ = ['Code', 'Expression', 'Suite', 'LenientLookup', 'StrictLookup',
            'Undefined', 'UndefinedError']
 __docformat__ = 'restructuredtext en'
 
+
+def get_code_params(code):
+    return (code.co_nlocals, code.co_kwonlyargcount, code.co_stacksize,
+            code.co_flags, code.co_code, code.co_consts, code.co_names,
+            code.co_varnames, code.co_filename, code.co_name,
+            code.co_firstlineno, code.co_lnotab, (), ())
+
+def build_code_chunk(code, filename, name, lineno):
+    return CodeType(0, code.co_nlocals, code.co_kwonlyargcount,
+                    code.co_stacksize, code.co_flags | 0x0040,
+                    code.co_code, code.co_consts, code.co_names,
+                    code.co_varnames, filename, name, lineno,
+                    code.co_lnotab, (), ())
 
 class Code(object):
     """Abstract base class for the `Expression` and `Suite` classes."""
@@ -408,14 +419,9 @@ def _compile(node, source=None, mode='eval', filename=None, lineno=-1,
              xform=None):
     if not filename:
         filename = '<string>'
-    if IS_PYTHON2:
-        # Python 2 requires non-unicode filenames
-        if isinstance(filename, str):
-            filename = filename.encode('utf-8', 'replace')
-    else:
-        # Python 3 requires unicode filenames
-        if not isinstance(filename, str):
-            filename = filename.decode('utf-8', 'replace')
+    # Python 3 requires unicode filenames
+    if not isinstance(filename, str):
+        filename = filename.decode('utf-8', 'replace')
     if lineno <= 0:
         lineno = 1
 
@@ -472,7 +478,7 @@ class TemplateASTTransformer(ASTTransformer):
         self.locals = [CONSTANTS]
 
     def _process(self, names, node):
-        if not IS_PYTHON2 and isinstance(node, _ast.arg):
+        if isinstance(node, _ast.arg):
             names.add(node.arg)
         elif isinstance(node, str):
             names.add(node)

@@ -23,7 +23,6 @@ from genshi.core import Markup
 from genshi.template.base import Context
 from genshi.template.eval import Expression, Suite, Undefined, UndefinedError, \
                                  UNDEFINED
-from genshi.compat import IS_PYTHON2
 
 
 class ExpressionTestCase(unittest.TestCase):
@@ -69,23 +68,12 @@ class ExpressionTestCase(unittest.TestCase):
         self.assertEqual('þ', expr.evaluate({}))
         expr = Expression("u'\xfe'")
         self.assertEqual('þ', expr.evaluate({}))
-        # On Python2 strings are converted to unicode if they contained
-        # non-ASCII characters.
-        # On Py3k, we have no need to do this as non-prefixed strings aren't
-        # raw.
         expr = Expression(r"b'\xc3\xbe'")
-        if IS_PYTHON2:
-            self.assertEqual('þ', expr.evaluate({}))
-        else:
-            self.assertEqual('þ'.encode('utf-8'), expr.evaluate({}))
+        self.assertEqual('þ'.encode('utf-8'), expr.evaluate({}))
 
     def test_num_literal(self):
         self.assertEqual(42, Expression("42").evaluate({}))
-        if IS_PYTHON2:
-            self.assertEqual(42, Expression("42L").evaluate({}))
         self.assertEqual(.42, Expression(".42").evaluate({}))
-        if IS_PYTHON2:
-            self.assertEqual(0o7, Expression("07").evaluate({}))
         self.assertEqual(0xF2, Expression("0xF2").evaluate({}))
         self.assertEqual(0XF2, Expression("0XF2").evaluate({}))
 
@@ -257,14 +245,6 @@ class ExpressionTestCase(unittest.TestCase):
         data = {'items': list(range(5))}
         expr = Expression("filter(lambda x: x > 2, items)")
         self.assertEqual([3, 4], list(expr.evaluate(data)))
-
-    def test_lambda_tuple_arg(self):
-        # This syntax goes away in Python 3
-        if not IS_PYTHON2:
-            return
-        data = {'items': [(1, 2), (2, 1)]}
-        expr = Expression("filter(lambda (x, y): x > y, items)")
-        self.assertEqual([(2, 1)], list(expr.evaluate(data)))
 
     def test_list_comprehension(self):
         expr = Expression("[n for n in numbers if n < 2]")
@@ -590,28 +570,27 @@ x = smash(foo='abc', bar='def')
         suite.execute(data)
         self.assertEqual(['bardef', 'fooabc'], sorted(data['x']))
 
-    if not IS_PYTHON2:
-        def test_def_kwonlyarg(self):
-            suite = Suite("""
+    def test_def_kwonlyarg(self):
+        suite = Suite("""
 def kwonly(*args, k):
     return k
 x = kwonly(k="foo")
 """)
-            data = {}
-            suite.execute(data)
-            self.assertEqual("foo", data['x'])
+        data = {}
+        suite.execute(data)
+        self.assertEqual("foo", data['x'])
 
-        def test_def_kwonlyarg_with_default(self):
-            suite = Suite("""
+    def test_def_kwonlyarg_with_default(self):
+        suite = Suite("""
 def kwonly(*args, k="bar"):
     return k
 x = kwonly(k="foo")
 y = kwonly()
 """)
-            data = {}
-            suite.execute(data)
-            self.assertEqual("foo", data['x'])
-            self.assertEqual("bar", data['y'])
+        data = {}
+        suite.execute(data)
+        self.assertEqual("foo", data['x'])
+        self.assertEqual("bar", data['y'])
 
     def test_def_nested(self):
         suite = Suite("""
@@ -864,7 +843,7 @@ with open(path) as file:
 
         def test_yield_expression(self):
             d = {}
-            suite = Suite("""from genshi.compat import next
+            suite = Suite("""
 results = []
 def counter(maximum):
     i = 0
