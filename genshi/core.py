@@ -14,11 +14,10 @@
 """Core classes for markup processing."""
 
 from functools import reduce
-import sys
 from itertools import chain
 import operator
 
-from genshi.util import plaintext, stripentities, striptags
+from genshi.util import stripentities, striptags
 
 __all__ = ['Stream', 'Markup', 'escape', 'unescape', 'Attrs', 'Namespace',
            'QName']

@@ -16,7 +16,6 @@ from io import BytesIO, StringIO
 import os
 import pickle
 import shutil
-import sys
 import tempfile
 import unittest
 
@@ -82,7 +81,7 @@ class MarkupTemplateTestCase(unittest.TestCase):
     def test_bad_directive_error(self):
         xml = '<p xmlns:py="http://genshi.edgewall.org/" py:do="nothing" />'
         try:
-            tmpl = MarkupTemplate(xml, filename='test.html')
+            MarkupTemplate(xml, filename='test.html')
         except BadDirectiveError as e:
             self.assertEqual('test.html', e.filename)
             self.assertEqual(1, e.lineno)
@@ -90,7 +89,7 @@ class MarkupTemplateTestCase(unittest.TestCase):
     def test_directive_value_syntax_error(self):
         xml = """<p xmlns:py="http://genshi.edgewall.org/" py:if="bar'" />"""
         try:
-            tmpl = MarkupTemplate(xml, filename='test.html').generate()
+            MarkupTemplate(xml, filename='test.html').generate()
             self.fail('Expected TemplateSyntaxError')
         except TemplateSyntaxError as e:
             self.assertEqual('test.html', e.filename)
@@ -101,7 +100,7 @@ class MarkupTemplateTestCase(unittest.TestCase):
           Foo <em>${bar"}</em>
         </p>"""
         try:
-            tmpl = MarkupTemplate(xml, filename='test.html')
+            MarkupTemplate(xml, filename='test.html')
             self.fail('Expected TemplateSyntaxError')
         except TemplateSyntaxError as e:
             self.assertEqual('test.html', e.filename)
@@ -114,7 +113,7 @@ class MarkupTemplateTestCase(unittest.TestCase):
 
         </p>"""
         try:
-            tmpl = MarkupTemplate(xml, filename='test.html')
+            MarkupTemplate(xml, filename='test.html')
             self.fail('Expected TemplateSyntaxError')
         except TemplateSyntaxError as e:
             self.assertEqual('test.html', e.filename)
@@ -614,8 +613,7 @@ class MarkupTemplateTestCase(unittest.TestCase):
             </head>
         </html>""")
         try:
-            tmpl = MarkupTemplate(xml, filename='test.html',
-                                  allow_exec=False)
+            MarkupTemplate(xml, filename='test.html', allow_exec=False)
             self.fail('Expected SyntaxError')
         except TemplateSyntaxError as e:
             pass
@@ -629,7 +627,7 @@ class MarkupTemplateTestCase(unittest.TestCase):
               <title py:content="title">This is replaced.</title>
             </head>
         </html>""")
-        tmpl = MarkupTemplate(xml, filename='test.html', allow_exec=True)
+        MarkupTemplate(xml, filename='test.html', allow_exec=True)
 
     def test_exec_in_match(self):
         xml = ("""<html xmlns:py="http://genshi.edgewall.org/">

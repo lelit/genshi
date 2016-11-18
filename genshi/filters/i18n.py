@@ -647,7 +647,6 @@ class Translator(DirectiveFactory):
                                 (used internally)
         :return: the localized stream
         """
-        ignore_tags = self.ignore_tags
         include_attrs = self.include_attrs
         skip = 0
         xml_lang = XML_NAMESPACE['lang']

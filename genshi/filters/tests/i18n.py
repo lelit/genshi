@@ -669,7 +669,6 @@ class MsgDirectiveTestCase(unittest.TestCase):
             xmlns:i18n="http://genshi.edgewall.org/i18n">
           <p i18n:msg="" title="Foo bar">Foo</p>
         </html>""")
-        gettext = lambda s: "Voh"
         translator = Translator(DummyTranslations({
             'Foo': 'Voh',
             'Foo bar': 'Voh bär'

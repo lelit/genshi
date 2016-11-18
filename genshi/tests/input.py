@@ -13,7 +13,6 @@
 
 import doctest
 from io import StringIO, BytesIO
-import sys
 import unittest
 
 from genshi.core import Attrs, Stream

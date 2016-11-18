@@ -18,7 +18,7 @@ import unittest
 
 from genshi import core
 from genshi.core import Markup, Attrs, Namespace, QName, escape, unescape
-from genshi.input import XML, ParseError
+from genshi.input import XML
 
 
 class StreamTestCase(unittest.TestCase):
