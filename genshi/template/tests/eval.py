@@ -116,10 +116,7 @@ class ExpressionTestCase(unittest.TestCase):
 
     def test_binop_sub(self):
         self.assertEqual(1, Expression("2 - 1").evaluate({}))
-        self.assertEqual(1, Expression("x - y").evaluate({'x': 1, 'y': 1}))
-
-    def test_binop_sub(self):
-        self.assertEqual(1, Expression("2 - 1").evaluate({}))
+        self.assertEqual(0, Expression("x - y").evaluate({'x': 1, 'y': 1}))
         self.assertEqual(1, Expression("x - y").evaluate({'x': 2, 'y': 1}))
 
     def test_binop_mul(self):
