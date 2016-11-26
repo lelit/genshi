@@ -174,8 +174,7 @@ class MsgDirective(ExtractableI18NDirective):
             if previous[0] is not END:
                 msgbuf.append(*previous)
                 previous = None
-            for event in msgbuf.translate(gettext(msgbuf.format())):
-                yield event
+            yield from msgbuf.translate(gettext(msgbuf.format()))
             if previous:
                 yield previous
 
@@ -189,18 +188,16 @@ class MsgDirective(ExtractableI18NDirective):
         stream = iter(stream)
         previous = next(stream)
         if previous[0] is START:
-            for message in translator._extract_attrs(previous,
-                                                     gettext_functions,
-                                                     search_text=search_text):
-                yield message
+            yield from translator._extract_attrs(previous,
+                                                 gettext_functions,
+                                                 search_text=search_text)
             previous = next(stream)
             strip = True
         for event in stream:
             if event[0] is START:
-                for message in translator._extract_attrs(event,
-                                                         gettext_functions,
-                                                         search_text=search_text):
-                    yield message
+                yield from translator._extract_attrs(event,
+                                                     gettext_functions,
+                                                     search_text=search_text)
             msgbuf.append(*previous)
             previous = event
         if not strip:
@@ -249,18 +246,16 @@ class ChooseBranchDirective(I18NDirective):
 
         if previous[0] is START:
             # skip the enclosing element
-            for message in translator._extract_attrs(previous,
-                                                     gettext_functions,
-                                                     search_text=search_text):
-                yield message
+            yield from translator._extract_attrs(previous,
+                                                 gettext_functions,
+                                                 search_text=search_text)
             previous = next(stream)
 
         for event in stream:
             if previous[0] is START:
-                for message in translator._extract_attrs(previous,
-                                                         gettext_functions,
-                                                         search_text=search_text):
-                    yield message
+                yield from translator._extract_attrs(previous,
+                                                     gettext_functions,
+                                                     search_text=search_text)
             msgbuf.append(*previous)
             previous = event
 
@@ -413,8 +408,7 @@ class ChooseDirective(ExtractableI18NDirective):
                         translation = ngettext(singular_msgbuf.format(),
                                                plural_msgbuf.format(),
                                                numeral)
-                        for subevent in msgbuf.translate(translation):
-                            yield subevent
+                        yield from msgbuf.translate(translation)
                     else:
                         yield event
             else:
@@ -430,10 +424,9 @@ class ChooseDirective(ExtractableI18NDirective):
 
         if previous[0] is START:
             # skip the enclosing element
-            for message in translator._extract_attrs(previous,
-                                                     gettext_functions,
-                                                     search_text=search_text):
-                yield message
+            yield from translator._extract_attrs(previous,
+                                                 gettext_functions,
+                                                 search_text=search_text)
             previous = next(stream)
             strip = True
 
@@ -445,24 +438,21 @@ class ChooseDirective(ExtractableI18NDirective):
                 directives, substream = previous[1]
                 for directive in directives:
                     if isinstance(directive, SingularDirective):
-                        for message in directive.extract(translator,
-                                substream, gettext_functions, search_text,
-                                comment_stack, msgbuf=singular_msgbuf):
-                            yield message
+                        yield from directive.extract(translator,
+                                                     substream, gettext_functions, search_text,
+                                                     comment_stack, msgbuf=singular_msgbuf)
                     elif isinstance(directive, PluralDirective):
-                        for message in directive.extract(translator,
-                                substream, gettext_functions, search_text,
-                                comment_stack, msgbuf=plural_msgbuf):
-                            yield message
+                        yield from directive.extract(translator,
+                                                     substream, gettext_functions, search_text,
+                                                     comment_stack, msgbuf=plural_msgbuf)
                     elif not isinstance(directive, StripDirective):
                         singular_msgbuf.append(*previous)
                         plural_msgbuf.append(*previous)
             else:
                 if previous[0] is START:
-                    for message in translator._extract_attrs(previous,
-                                                             gettext_functions,
-                                                             search_text):
-                        yield message
+                    yield from translator._extract_attrs(previous,
+                                                         gettext_functions,
+                                                         search_text)
                 singular_msgbuf.append(*previous)
                 plural_msgbuf.append(*previous)
             previous = event
@@ -534,8 +524,7 @@ class DomainDirective(I18NDirective):
 
     def __call__(self, stream, directives, ctxt, **vars):
         ctxt.push({'_i18n.domain': self.domain})
-        for event in _apply_directives(stream, directives, ctxt, vars):
-            yield event
+        yield from _apply_directives(stream, directives, ctxt, vars)
         ctxt.pop()
 
 
@@ -824,10 +813,9 @@ class Translator(DirectiveFactory):
                     skip += 1
                     continue
 
-                for message in self._extract_attrs((kind, data, pos),
-                                                   gettext_functions,
-                                                   search_text=search_text):
-                    yield message
+                yield from self._extract_attrs((kind, data, pos),
+                                               gettext_functions,
+                                               search_text=search_text)
 
             elif not skip and search_text and kind is TEXT:
                 text = data.strip()
@@ -853,11 +841,9 @@ class Translator(DirectiveFactory):
                         if len(directives) == 1:
                             # in case we're in the presence of something like:
                             # <p i18n:comment="foo">Foo</p>
-                            for message in self.extract(
-                                    substream, gettext_functions,
-                                    search_text=search_text and not skip,
-                                    comment_stack=comment_stack):
-                                yield message
+                            yield from self.extract(substream, gettext_functions,
+                                                    search_text=search_text and not skip,
+                                                    comment_stack=comment_stack)
                         directives.pop(idx)
                     elif not isinstance(directive, I18NDirective):
                         # Remove all other non i18n directives from the process
@@ -867,24 +853,18 @@ class Translator(DirectiveFactory):
                     # Extract content if there's no directives because
                     # strip was pop'ed and not because comment was pop'ed.
                     # Extraction in this case has been taken care of.
-                    for message in self.extract(
-                            substream, gettext_functions,
-                            search_text=search_text and not skip):
-                        yield message
+                    yield from self.extract(substream, gettext_functions,
+                                            search_text=search_text and not skip)
 
                 for directive in directives:
                     if isinstance(directive, ExtractableI18NDirective):
-                        for message in directive.extract(self,
-                                substream, gettext_functions,
-                                search_text=search_text and not skip,
-                                comment_stack=comment_stack):
-                            yield message
+                        yield from directive.extract(self, substream, gettext_functions,
+                                                     search_text=search_text and not skip,
+                                                     comment_stack=comment_stack)
                     else:
-                        for message in self.extract(
-                                substream, gettext_functions,
-                                search_text=search_text and not skip,
-                                comment_stack=comment_stack):
-                            yield message
+                        yield from self.extract(substream, gettext_functions,
+                                                search_text=search_text and not skip,
+                                                comment_stack=comment_stack)
 
                 if in_comment:
                     comment_stack.pop()
@@ -913,9 +893,8 @@ class Translator(DirectiveFactory):
                     if text:
                         yield event[2][1], None, text, []
             else:
-                for message in self.extract(_ensure(value), gettext_functions,
-                                            search_text=False):
-                    yield message
+                yield from self.extract(_ensure(value), gettext_functions,
+                                        search_text=False)
 
 
 class MessageBuffer(object):
@@ -1206,8 +1185,7 @@ def extract_from_code(code, gettext_functions):
                 elif isinstance(child, _ast.AST):
                     children.append(child)
             for child in children:
-                for funcname, strings in _walk(child):
-                    yield funcname, strings
+                yield from _walk(child)
     return _walk(code.ast)
 
 
@@ -1250,5 +1228,4 @@ def extract(fileobj, keywords, comment_tags, options):
     translator = Translator(None, ignore_tags, include_attrs, extract_text)
     if hasattr(tmpl, 'add_directives'):
         tmpl.add_directives(Translator.NAMESPACE, translator)
-    for message in translator.extract(tmpl.stream, gettext_functions=keywords):
-        yield message
+    yield from translator.extract(tmpl.stream, gettext_functions=keywords)

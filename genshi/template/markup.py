@@ -374,10 +374,8 @@ class MarkupTemplate(Template):
                     # Recursively process the output
                     template = _apply_directives(template, directives, ctxt,
                                                  vars)
-                    for event in self._match(self._flatten(template, ctxt,
-                                                           **vars),
-                                             ctxt, start=idx + 1, **vars):
-                        yield event
+                    yield from self._match(self._flatten(template, ctxt, **vars),
+                                           ctxt, start=idx + 1, **vars)
 
                     # If the match template did not actually call select to
                     # consume the matched stream, the original events need to

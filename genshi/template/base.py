@@ -494,8 +494,7 @@ class Template(DirectiveFactory):
                 if directives:
                     yield kind, (directives, list(substream)), pos
                 else:
-                    for event in substream:
-                        yield event
+                    yield from substream
             else:
                 if kind is INCLUDE:
                     href, cls, fallback = data
@@ -518,13 +517,11 @@ class Template(DirectiveFactory):
                             if tmpl.filepath not in inlined:
                                 inlined.add(tmpl.filepath)
                                 tmpl._prepare_self(inlined)
-                                for event in tmpl.stream:
-                                    yield event
+                                yield from tmpl.stream
                                 inlined.discard(tmpl.filepath)
                                 tmpl_inlined = True
                         else:
-                            for event in self._prepare(fallback, inlined):
-                                yield event
+                            yield from self._prepare(fallback, inlined)
                             tmpl_inlined = True
                     if tmpl_inlined:
                         continue
@@ -647,15 +644,13 @@ class Template(DirectiveFactory):
                 try:
                     tmpl = self.loader.load(href, relative_to=event[2][0],
                                             cls=cls or self.__class__)
-                    for event in tmpl.generate(ctxt, **vars):
-                        yield event
+                    yield from tmpl.generate(ctxt, **vars)
                 except TemplateNotFound:
                     if fallback is None:
                         raise
                     for filter_ in self.filters:
                         fallback = filter_(iter(fallback), ctxt, **vars)
-                    for event in fallback:
-                        yield event
+                    yield from fallback
             else:
                 yield event
 

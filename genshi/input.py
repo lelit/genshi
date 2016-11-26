@@ -45,8 +45,7 @@ def ET(element):
     if element.text:
         yield TEXT, element.text, (None, -1, -1)
     for child in element.getchildren():
-        for item in ET(child):
-            yield item
+        yield from ET(child)
     yield END, tag_name, (None, -1, -1)
     if element.tail:
         yield TEXT, element.tail, (None, -1, -1)
@@ -159,8 +158,7 @@ class XMLParser(object):
                             if isinstance(data, str):
                                 data = data.encode('utf-8')
                             self.expat.Parse(data, False)
-                    for event in self._queue:
-                        yield event
+                    yield from self._queue
                     self._queue = []
                     if done:
                         break
@@ -336,13 +334,12 @@ class HTMLParser(html.HTMLParser, object):
                             if not isinstance(data, str):
                                 raise UnicodeError("source returned bytes, but no encoding specified")
                             self.feed(data)
-                    for kind, data, pos in self._queue:
-                        yield kind, data, pos
+                    yield from self._queue
                     self._queue = []
                     if done:
                         open_tags = self._open_tags
                         open_tags.reverse()
-                        for tag in open_tags:
+                        for tag, pos in open_tags:
                             yield END, QName(tag), pos
                         break
             except html.HTMLParseError as e:
@@ -373,12 +370,12 @@ class HTMLParser(html.HTMLParser, object):
         if tag in self._EMPTY_ELEMS:
             self._enqueue(END, QName(tag))
         else:
-            self._open_tags.append(tag)
+            self._open_tags.append((tag, self._getpos()))
 
     def handle_endtag(self, tag):
         if tag not in self._EMPTY_ELEMS:
             while self._open_tags:
-                open_tag = self._open_tags.pop()
+                open_tag, pos = self._open_tags.pop()
                 self._enqueue(END, QName(open_tag))
                 if open_tag.lower() == tag.lower():
                     break

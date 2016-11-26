@@ -178,8 +178,7 @@ class AttrsDirective(Directive):
                     for n, v in attrs
                 ]
             yield kind, (tag, attrib), pos
-            for event in stream:
-                yield event
+            yield from stream
 
         return _apply_directives(_generate(), directives, ctxt, vars)
 
@@ -307,8 +306,7 @@ class DefDirective(Directive):
             if not self.dstar_args is None:
                 scope[self.dstar_args] = kwargs
             ctxt.push(scope)
-            for event in _apply_directives(stream, directives, ctxt, vars):
-                yield event
+            yield from _apply_directives(stream, directives, ctxt, vars)
             ctxt.pop()
         function.__name__ = self.name
 
@@ -367,8 +365,7 @@ class ForDirective(Directive):
         for item in iterable:
             assign(scope, item)
             ctxt.push(scope)
-            for event in _apply_directives(stream, directives, ctxt, vars):
-                yield event
+            yield from _apply_directives(stream, directives, ctxt, vars)
             ctxt.pop()
 
     def __repr__(self):
@@ -535,8 +532,7 @@ class StripDirective(Directive):
                     yield previous
                     previous = event
             else:
-                for event in stream:
-                    yield event
+                yield from stream
         return _apply_directives(_generate(), directives, ctxt, vars)
 
 
@@ -593,8 +589,7 @@ class ChooseDirective(Directive):
         if self.expr:
             info[2] = _eval_expr(self.expr, ctxt, vars)
         ctxt._choice_stack.append(info)
-        for event in _apply_directives(stream, directives, ctxt, vars):
-            yield event
+        yield from _apply_directives(stream, directives, ctxt, vars)
         ctxt._choice_stack.pop()
 
 
@@ -718,8 +713,7 @@ class WithDirective(Directive):
             value = _eval_expr(expr, ctxt, vars)
             for assign in targets:
                 assign(frame, value)
-        for event in _apply_directives(stream, directives, ctxt, vars):
-            yield event
+        yield from _apply_directives(stream, directives, ctxt, vars)
         ctxt.pop()
 
     def __repr__(self):

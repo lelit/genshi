@@ -134,11 +134,9 @@ class Fragment(object):
     def _generate(self):
         for child in self.children:
             if isinstance(child, Fragment):
-                for event in child._generate():
-                    yield event
+                yield from child._generate()
             elif isinstance(child, Stream):
-                for event in child:
-                    yield event
+                yield from child
             else:
                 if not isinstance(child, str):
                     child = str(child)
@@ -266,8 +264,7 @@ class Element(Fragment):
 
     def _generate(self):
         yield START, (self.tag, self.attrib), (None, -1, -1)
-        for kind, data, pos in Fragment._generate(self):
-            yield kind, data, pos
+        yield from Fragment._generate(self)
         yield END, self.tag, (None, -1, -1)
 
     def generate(self):

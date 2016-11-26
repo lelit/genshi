@@ -931,8 +931,7 @@ class FilterTransformation(object):
                     queue.append(event)
                     if mark is EXIT:
                         break
-                for queue_event in flush(queue):
-                    yield queue_event
+                yield from flush(queue)
             elif mark is OUTSIDE:
                 stopped = False
                 queue.append(event)
@@ -942,14 +941,12 @@ class FilterTransformation(object):
                     queue.append(event)
                 else:
                     stopped = True
-                for queue_event in flush(queue):
-                    yield queue_event
+                yield from flush(queue)
                 if not stopped:
                     yield mark, event
             else:
                 yield mark, event
-        for queue_event in flush(queue):
-            yield queue_event
+        yield from flush(queue)
 
 
 class MapTransformation(object):
@@ -1077,8 +1074,7 @@ class ReplaceTransformation(InjectorTransformation):
         for mark, event in stream:
             if mark is not None:
                 start = mark
-                for subevent in self._inject():
-                    yield subevent
+                yield from self._inject()
                 for mark, event in stream:
                     if start is ENTER:
                         if mark is EXIT:
@@ -1102,8 +1098,7 @@ class BeforeTransformation(InjectorTransformation):
         for mark, event in stream:
             if mark is not None:
                 start = mark
-                for subevent in self._inject():
-                    yield subevent
+                yield from self._inject()
                 yield mark, event
                 for mark, event in stream:
                     if mark != start and start is not ENTER:
@@ -1136,8 +1131,7 @@ class AfterTransformation(InjectorTransformation):
                     yield mark, event
                     if start is ENTER and mark is EXIT:
                         break
-                for subevent in self._inject():
-                    yield subevent
+                yield from self._inject()
 
 
 class PrependTransformation(InjectorTransformation):
@@ -1151,8 +1145,7 @@ class PrependTransformation(InjectorTransformation):
         for mark, event in stream:
             yield mark, event
             if mark is ENTER:
-                for subevent in self._inject():
-                    yield subevent
+                yield from self._inject()
 
 
 class AppendTransformation(InjectorTransformation):
@@ -1170,8 +1163,7 @@ class AppendTransformation(InjectorTransformation):
                     if mark is EXIT:
                         break
                     yield mark, event
-                for subevent in self._inject():
-                    yield subevent
+                yield from self._inject()
                 yield mark, event
 
 
@@ -1263,8 +1255,7 @@ class CopyTransformation(object):
                     self.buffer.append(event)
                     if start is ENTER and mark is EXIT:
                         break
-                for i in events:
-                    yield i
+                yield from events
             else:
                 yield mark, event
 

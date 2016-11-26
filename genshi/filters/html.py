@@ -177,8 +177,7 @@ class HTMLFormFiller(object):
                         attrs -= 'selected'
                     yield okind, (tag, attrs), opos
                     if option_text:
-                        for event in option_text:
-                            yield event
+                        yield from option_text
                     in_option = False
                     no_option_value = False
                     option_start = option_value = None
