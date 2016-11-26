@@ -342,9 +342,10 @@ class HTMLParser(html.HTMLParser, object):
                         for tag, pos in open_tags:
                             yield END, QName(tag), pos
                         break
-            except html.HTMLParseError as e:
-                msg = '%s: line %d, column %d' % (e.msg, e.lineno, e.offset)
-                raise ParseError(msg, self.filename, e.lineno, e.offset)
+            except Exception as e:
+                pos = self._getpos()
+                msg = '%s: line %d, column %d' % (e, pos[1], pos[2])
+                raise ParseError(msg, *pos)
         return Stream(_generate()).filter(_coalesce)
 
     def __iter__(self):
