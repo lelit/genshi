@@ -90,7 +90,7 @@ example:
 .. code-block:: genshitext
 
   Dear $name,
-  
+
   These are some of my favorite fruits:
   #for fruit in fruits
    * $fruit
@@ -419,7 +419,7 @@ addition to the standard built-ins that are available to all Python code.
 -----------------
 This function determines whether a variable of the specified name exists in
 the context data, and returns ``True`` if it does.
- 
+
 .. _`value_of`:
 
 ``value_of(name, default=None)``

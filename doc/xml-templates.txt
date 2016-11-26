@@ -267,7 +267,7 @@ The above would be rendered to:
     </p>
   </div>
 
-If a macro doesn't require parameters, it can be defined without the 
+If a macro doesn't require parameters, it can be defined without the
 parenthesis. For example:
 
 .. code-block:: genshi
@@ -637,7 +637,7 @@ write:
 
   <xi:include href="base.html"><xi:fallback /></xi:include>
 
-See the `XInclude specification`_ for more about fallback content. Note though 
+See the `XInclude specification`_ for more about fallback content. Note though
 that Genshi currently only supports a small subset of XInclude.
 
 .. _`xinclude specification`: http://www.w3.org/TR/xinclude/

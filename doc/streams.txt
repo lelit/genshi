@@ -47,7 +47,7 @@ of the form ``(kind, data, pos)``, where:
 
   >>> for kind, data, pos in stream:
   ...     print('%s %r %r' % (kind, data, pos))
-  ... 
+  ...
   START (QName('p'), Attrs([(QName('class'), u'intro')])) (None, 1, 0)
   TEXT u'Some text and ' (None, 1, 17)
   START (QName('a'), Attrs([(QName('href'), u'http://example.org/')])) (None, 1, 31)
@@ -144,7 +144,7 @@ Here's the output from ``serialize()``:
 
   >>> for output in stream.serialize():
   ...     print(repr(output))
-  ... 
+  ...
   <Markup u'<p class="intro">'>
   <Markup u'Some text and '>
   <Markup u'<a href="http://example.org/">'>
@@ -162,7 +162,7 @@ And here's the output from ``render()``:
   <p class="intro">Some text and <a href="http://example.org/">a link</a>.<br/></p>
 
 Both methods can be passed a ``method`` parameter that determines how exactly
-the events are serialized to text. This parameter can be either a string or a 
+the events are serialized to text. This parameter can be either a string or a
 custom serializer class:
 
 .. code-block:: pycon
@@ -263,7 +263,7 @@ options are supported by the built-in serializers:
 
   The parameter can also be specified as a string to refer to commonly used
   doctypes:
-  
+
   +-----------------------------+-------------------------------------------+
   | Shorthand                   | DOCTYPE                                   |
   +=============================+===========================================+

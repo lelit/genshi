@@ -26,7 +26,7 @@ one:
 .. code-block:: python
 
   from genshi.template import TemplateLoader
-  
+
   loader = TemplateLoader(['/path/to/dir1', '/path/to/dir2'],
                           auto_reload=True)
   tmpl = loader.load('test.html')
@@ -42,7 +42,7 @@ method:
 .. code-block:: python
 
   from genshi.template.text import NewTextTemplate
-  
+
   tmpl = loader.load('mail.txt', cls=NewTextTemplate)
 
 
@@ -74,7 +74,7 @@ source has changed.
 .. code-block:: python
 
   from genshi.template import TemplateLoader
-  
+
   loader = TemplateLoader('templates', auto_reload=True, max_cache_size=100)
 
 In production environments, automatic reloading should be disabled, as it does
@@ -100,10 +100,10 @@ template, you'd use code similar to this:
 
   from genshi.filters import Translator
   from genshi.template import TemplateLoader
-  
+
   def template_loaded(template):
       Translator(translations.ugettext).setup(template)
-  
+
   loader = TemplateLoader('templates', callback=template_loaded)
 
 .. _`translation filter`: i18n.html

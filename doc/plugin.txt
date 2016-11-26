@@ -133,7 +133,7 @@ plain expressions.
 
 ``genshi.auto_reload``
 ----------------------
-Whether the template loader should check the last modification time of template 
+Whether the template loader should check the last modification time of template
 files, and automatically reload them if they have been changed. Specify "yes"
 to enable this reloading (which is the default), or "no" to turn it off.
 

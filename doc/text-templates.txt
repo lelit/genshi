@@ -335,12 +335,12 @@ A simple template using the old syntax looked like this:
 .. code-block:: genshitext
 
   Dear $name,
-  
+
   We have the following items for you:
   #for item in items
    * $item
   #end
-  
+
   All the best,
   Foobar
 

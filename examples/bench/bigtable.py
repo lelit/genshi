@@ -167,7 +167,7 @@ if et:
         et.tostring(_table)
 
 if cet:
-    def test_cet(): 
+    def test_cet():
         """cElementTree"""
         _table = cet.Element('table')
         for row in table:
