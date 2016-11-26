@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Template language benchmarks
 #
 # Objective: Generate a 1000x10 HTML table as fast as possible.

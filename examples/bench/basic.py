@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Template language benchmarks
 #
 # Objective: Test general templating features using a small template
