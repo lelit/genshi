@@ -32,7 +32,7 @@ __docformat__ = 'restructuredtext en'
 
 class MarkupTemplate(Template):
     """Implementation of the template language for XML-based templates.
-    
+
     >>> tmpl = MarkupTemplate('''<ul xmlns:py="http://genshi.edgewall.org/">
     ...   <li py:for="item in items">${item}</li>
     ... </ul>''')
@@ -291,7 +291,7 @@ class MarkupTemplate(Template):
 
     def add_directives(self, namespace, factory):
         """Register a custom `DirectiveFactory` for a given namespace.
-        
+
         :param namespace: the namespace URI
         :type namespace: `basestring`
         :param factory: the directive factory to register
